@@ -16,6 +16,7 @@
     <input 
       type="text" 
       placeholder="Search songs, albums, artists" 
+      (input)="onSearch($event)"
       class="w-full pl-10 pr-4 py-2 bg-[var(--tui-background-elevation-2)] border border-[var(--tui-border-normal)] rounded-full text-white placeholder-[var(--tui-text-secondary)] focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
     >
   </div>

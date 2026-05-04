@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { TuiIcon } from '@taiga-ui/core';
 import { PlayerUiService } from '../../services/player-ui.service';
+import { AppStore } from '../../../../core/store/app.store';
 
 @Component({
   selector: 'app-player-bar',
@@ -13,10 +14,9 @@ import { PlayerUiService } from '../../services/player-ui.service';
 })
 export class PlayerBarComponent {
   protected readonly playerUi = inject(PlayerUiService);
-
-  isPlaying = false;
+  protected readonly store = inject(AppStore);
 
   togglePlay(): void {
-    this.isPlaying = !this.isPlaying;
+    this.store.togglePlay();
   }
 }
