@@ -1,0 +1,11 @@
+@for (item of navItems; track item.route) {
+  <a 
+    [routerLink]="item.route" 
+    routerLinkActive="text-purple-400"
+    [routerLinkActiveOptions]="{exact: item.route === '/'}"
+    class="flex flex-col items-center justify-center w-full h-full text-[var(--tui-text-secondary)] transition-colors"
+  >
+    <tui-icon [icon]="item.icon" class="text-2xl mb-1"></tui-icon>
+    <span class="text-[10px] font-medium">{{ item.label }}</span>
+  </a>
+}
