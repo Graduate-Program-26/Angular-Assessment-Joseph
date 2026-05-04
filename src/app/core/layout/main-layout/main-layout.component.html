@@ -1,0 +1,33 @@
+<!-- Top Header: spans full width -->
+<app-header></app-header>
+
+<!-- Body: sidebar + content + playlist sidebar -->
+<div class="flex flex-1 overflow-hidden">
+
+  <!-- Left Sidebar: desktop only -->
+  <app-sidebar></app-sidebar>
+
+  <!-- Main scrollable content area -->
+  <main
+    id="main-content"
+    class="flex-1 overflow-y-auto"
+    style="padding-bottom: calc(6rem + env(safe-area-inset-bottom));"
+  >
+    <div class="p-6 md:p-8 max-w-7xl mx-auto w-full">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+
+  <!-- Right Playlist Sidebar: large screens only -->
+  <app-playlist-sidebar></app-playlist-sidebar>
+
+</div>
+
+<!-- Bottom Player Bar: always visible on desktop, sits above mobile nav -->
+<app-player-bar></app-player-bar>
+
+<!-- Mobile Bottom Navigation: visible only on mobile, above player bar -->
+<app-mobile-nav></app-mobile-nav>
+
+<!-- Mobile queue drawer: overlays entire screen when open -->
+<app-mobile-queue-drawer></app-mobile-queue-drawer>
