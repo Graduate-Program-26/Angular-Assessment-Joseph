@@ -1,0 +1,36 @@
+<div class="flex flex-col gap-8 pb-12">
+  <div class="md:hidden">
+    <h1 class="text-3xl font-bold text-white mb-4">Search</h1>
+    <div class="relative group">
+      <input 
+        type="text" 
+        placeholder="Artists, songs, or podcasts" 
+        class="w-full pl-10 pr-4 py-3 bg-[var(--tui-background-elevation-1)] border border-[var(--tui-border-normal)] rounded-xl text-white focus:outline-none focus:border-purple-500 transition-all"
+      >
+      <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--tui-text-secondary)]">🔍</span>
+    </div>
+  </div>
+
+  <section class="flex flex-col gap-6">
+    <h2 class="text-xl font-bold text-white">Browse all</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      @for (genre of [
+        { name: 'Pop', color: 'bg-pink-600' },
+        { name: 'Hip-Hop', color: 'bg-orange-600' },
+        { name: 'Rock', color: 'bg-red-600' },
+        { name: 'Electronic', color: 'bg-purple-600' },
+        { name: 'Jazz', color: 'bg-blue-600' },
+        { name: 'Classical', color: 'bg-indigo-600' },
+        { name: 'K-Pop', color: 'bg-cyan-600' },
+        { name: 'Country', color: 'bg-green-600' },
+        { name: 'Indie', color: 'bg-teal-600' },
+        { name: 'Lofi', color: 'bg-slate-600' }
+      ]; track genre.name) {
+        <div class="relative aspect-[16/10] rounded-xl overflow-hidden cursor-pointer hover:scale-[1.02] transition-transform shadow-lg group {{ genre.color }}">
+          <span class="absolute top-4 left-4 text-lg font-bold text-white">{{ genre.name }}</span>
+          <div class="absolute -bottom-2 -right-4 w-20 h-20 bg-black/20 rotate-12 rounded shadow-2xl group-hover:rotate-6 transition-transform"></div>
+        </div>
+      }
+    </div>
+  </section>
+</div>

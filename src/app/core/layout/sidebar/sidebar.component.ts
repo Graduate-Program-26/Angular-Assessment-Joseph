@@ -24,6 +24,7 @@ export class SidebarComponent {
     { label: 'Explore', icon: '@tui.compass', route: '/explore', exact: false },
     { label: 'Search', icon: '@tui.search', route: '/search', exact: false },
     { label: 'Library', icon: '@tui.library', route: '/library', exact: false },
+    { label: 'History', icon: '@tui.history', route: '/history', exact: false },
     { label: 'Playlists', icon: '@tui.list-music', route: '/playlists', exact: false },
   ];
 }

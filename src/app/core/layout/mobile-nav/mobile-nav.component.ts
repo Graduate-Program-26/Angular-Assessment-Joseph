@@ -14,7 +14,9 @@ import { TuiIcon } from '@taiga-ui/core';
 export class MobileNavComponent {
   navItems = [
     { label: 'Home', icon: '@tui.home', route: '/' },
+    { label: 'Explore', icon: '@tui.compass', route: '/explore' },
     { label: 'Search', icon: '@tui.search', route: '/search' },
-    { label: 'Playlists', icon: '@tui.list', route: '/playlists' },
+    { label: 'History', icon: '@tui.history', route: '/history' },
+    { label: 'Playlists', icon: '@tui.list-music', route: '/playlists' },
   ];
 }

@@ -1,0 +1,56 @@
+<div class="flex flex-col gap-8 pb-12">
+  <header>
+    <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">Good morning</h1>
+    <p class="text-[var(--tui-text-secondary)]">Explore your personalized mix and new releases.</p>
+  </header>
+
+  <!-- Categories  -->
+  <div class="flex flex-wrap gap-3">
+    @for (cat of ['Relax', 'Energize', 'Workout', 'Commute', 'Focus']; track cat) {
+      <button class="px-5 py-2 rounded-full bg-[var(--tui-background-elevation-1)] border border-[var(--tui-border-normal)] text-sm font-medium hover:bg-[var(--tui-background-elevation-2)] transition-colors text-white">
+        {{ cat }}
+      </button>
+    }
+  </div>
+
+  <!-- Sections  -->
+  <section class="flex flex-col gap-4">
+    <div class="flex items-center justify-between">
+      <h2 class="text-xl font-bold text-white">Listen again</h2>
+      <button class="text-sm font-medium text-purple-400 hover:underline">Show all</button>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+      @for (i of [1,2,3,4,5,6]; track i) {
+        <div class="flex flex-col gap-3 p-3 rounded-xl bg-[var(--tui-background-elevation-1)] hover:bg-[var(--tui-background-elevation-2)] transition-all cursor-pointer group">
+          <div class="aspect-square w-full rounded-lg bg-gradient-to-br from-purple-900/40 to-pink-900/40 flex items-center justify-center relative overflow-hidden">
+             <div class="w-12 h-12 rounded-full bg-purple-500 shadow-xl flex items-center justify-center scale-0 group-hover:scale-100 transition-transform duration-300 absolute">
+                <span class="text-white">▶</span>
+             </div>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-sm font-semibold text-white truncate">Mix {{ i }}</span>
+            <span class="text-xs text-[var(--tui-text-secondary)] truncate">Playlist • DeeJay</span>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <section class="flex flex-col gap-4">
+    <div class="flex items-center justify-between">
+      <h2 class="text-xl font-bold text-white">Recommended for you</h2>
+      <button class="text-sm font-medium text-purple-400 hover:underline">Show all</button>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+      @for (i of [1,2,3,4,5,6]; track i) {
+        <div class="flex flex-col gap-3 p-3 rounded-xl bg-[var(--tui-background-elevation-1)] hover:bg-[var(--tui-background-elevation-2)] transition-all cursor-pointer group">
+          <div class="aspect-square w-full rounded-lg bg-gradient-to-tr from-blue-900/40 to-purple-900/40 flex items-center justify-center"></div>
+          <div class="flex flex-col">
+            <span class="text-sm font-semibold text-white truncate">Daily Mix {{ i }}</span>
+            <span class="text-xs text-[var(--tui-text-secondary)] truncate">Artist {{ i }}</span>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+</div>
