@@ -34,8 +34,7 @@
       @switch (store.activeTab()) {
         <!-- ALL VIEW -->
         @case ('All') {
-          @if (firstPageTracks().length > 0) {
-            @let topResult = firstPageTracks()[0];
+          @if (topResult(); as topResult) {
             <!-- Top Result Hero -->
             <div class="flex flex-col gap-4">
               <h2 class="text-xl font-bold text-white tracking-tight">Top Result</h2>
@@ -43,8 +42,8 @@
                 <div 
                   class="lg:col-span-1 p-8 rounded-2xl bg-linear-to-br from-white/10 to-white/5 hover:from-white/15 hover:to-white/10 transition-all cursor-pointer group flex flex-col items-center text-center shadow-2xl relative overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
                   tabindex="0"
-                  (click)="store.setCurrentTrack(topResult)"
-                  (keydown.enter)="store.setCurrentTrack(topResult)"
+                  (click)="playHero(topResult)"
+                  (keydown.enter)="playHero(topResult)"
                 >
                   <div class="absolute -top-12 -right-12 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl group-hover:bg-purple-500/20 transition-all"></div>
                   <div class="w-48 h-48 rounded-full overflow-hidden shadow-2xl mb-6 ring-4 ring-transparent group-hover:ring-purple-500/50 transition-all z-10">
@@ -52,9 +51,32 @@
                   </div>
                   <h3 class="text-3xl font-black text-white mb-2 z-10">{{ getHeroTitle(topResult) }}</h3>
                   <span class="text-sm text-white/60 uppercase tracking-widest font-bold mb-6 z-10">{{ getHeroSubtitle(topResult) }}</span>
-                  <button class="px-8 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-full font-bold transition-all transform active:scale-95 shadow-lg shadow-purple-500/20 z-10">
-                    Play Now
-                  </button>
+                  
+                  <div class="flex items-center gap-2 z-10">
+                    <button 
+                      (click)="$event.stopPropagation(); playHero(topResult)"
+                      class="px-8 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-full font-bold transition-all transform active:scale-95 shadow-lg shadow-purple-500/20"
+                    >
+                      Play Now
+                    </button>
+                    <button
+                      tuiIconButton
+                      type="button"
+                      appearance="flat"
+                      icon="@tui.ellipsis"
+                      class="!text-white hover:!bg-white/10 rounded-full"
+                      [tuiDropdown]="heroMenu"
+                      (click)="$event.stopPropagation()"
+                    >
+                    </button>
+                    <ng-template #heroMenu>
+                      <tui-data-list>
+                        @if (topResult.type === 'track') {
+                          <button tuiOption (click)="addToQueue($any(topResult))">Add to queue</button>
+                        }
+                      </tui-data-list>
+                    </ng-template>
+                  </div>
                 </div>
 
                 <div class="lg:col-span-2 flex flex-col gap-2">
@@ -64,16 +86,35 @@
                 </div>
                   <div class="flex flex-col gap-1">
                     @for (track of firstPageTracks().slice(0, 6); track track.id) {
-                      <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group cursor-pointer focus-visible:outline-none" tabindex="0" (click)="store.setCurrentTrack(track)" (keydown.enter)="store.setCurrentTrack(track)">
+                      <div 
+                        class="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group cursor-pointer focus-visible:outline-none" 
+                        tabindex="0" 
+                        (click)="playTrack(track)" 
+                        (keydown.enter)="playTrack(track)"
+                      >
                         <img [src]="track.album.cover_small" [alt]="track.title" class="w-12 h-12 rounded shadow-lg">
                         <div class="flex-1 min-w-0">
                           <div class="font-bold text-white truncate group-hover:text-purple-400 transition-colors">{{ track.title }}</div>
                           <div class="text-xs text-white/40 truncate">{{ track.artist.name }}</div>
                         </div>
-                        <div class="flex items-center gap-5 opacity-0 group-hover:opacity-100 transition-all">
-                          <tui-icon icon="@tui.mic" class="text-white/40 hover:text-white transition-colors" title="Lyrics"></tui-icon>
+                        <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all">
                           <tui-icon icon="@tui.heart" class="text-white/40 hover:text-red-500 transition-colors"></tui-icon>
-                          <tui-icon icon="@tui.ellipsis" class="text-white/40 hover:text-white transition-colors"></tui-icon>
+                          <button
+                            tuiIconButton
+                            type="button"
+                            appearance="flat"
+                            size="s"
+                            icon="@tui.ellipsis"
+                            class="!text-white hover:!bg-white/10 rounded-full"
+                            [tuiDropdown]="trackMenu"
+                            (click)="$event.stopPropagation()"
+                          >
+                          </button>
+                          <ng-template #trackMenu>
+                            <tui-data-list>
+                              <button tuiOption (click)="addToQueue(track)">Add to queue</button>
+                            </tui-data-list>
+                          </ng-template>
                         </div>
                       </div>
                     }
@@ -121,9 +162,15 @@
                   <div 
                     class="flex flex-col gap-3 min-w-40 group cursor-pointer focus-visible:outline-none"
                     tabindex="0"
+                    (click)="playAlbum(album)"
                   >
-                    <div class="w-40 h-40 rounded-lg overflow-hidden shadow-xl group-hover:shadow-purple-500/20 transition-all group-hover:-translate-y-1 duration-300">
+                    <div class="w-40 h-40 rounded-lg overflow-hidden shadow-xl group-hover:shadow-purple-500/20 transition-all group-hover:-translate-y-1 duration-300 relative">
                       <img [src]="album.cover_medium" [alt]="album.title" class="w-full h-full object-cover">
+                      <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <div class="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center text-white shadow-xl transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                          <tui-icon icon="@tui.play" class="text-2xl"></tui-icon>
+                        </div>
+                      </div>
                     </div>
                     <div class="flex flex-col gap-0.5">
                       <span class="font-bold text-white truncate w-40 group-hover:text-purple-400 transition-colors">{{ album.title }}</span>
@@ -158,19 +205,36 @@
           <div class="flex flex-col">
             @for (track of allTracks(); track track.id) {
               <div 
-                class="grid grid-cols-[1fr_1fr_1fr_60px] gap-4 p-4 rounded-xl hover:bg-white/5 items-center group cursor-pointer focus-visible:outline-none focus-visible:bg-white/10"
+                class="grid grid-cols-[1fr_1fr_1fr_60px_40px] gap-4 p-4 rounded-xl hover:bg-white/5 items-center group cursor-pointer focus-visible:outline-none focus-visible:bg-white/10"
                 tabindex="0"
-                (click)="store.setCurrentTrack(track)"
-                (keydown.enter)="store.setCurrentTrack(track)"
+                (click)="playTrack(track)"
+                (keydown.enter)="playTrack(track)"
               >
                 <div class="flex items-center gap-4 min-w-0">
                   <img [src]="track.album.cover_small" [alt]="track.title" class="w-12 h-12 rounded shadow">
-                  <span class="font-bold text-white truncate">{{ track.title }}</span>
+                  <span class="font-bold text-white truncate" [class.text-purple-400]="store.currentTrack()?.id === track.id">{{ track.title }}</span>
                 </div>
                 <div class="text-sm text-white/60 truncate">{{ track.artist.name }}</div>
                 <div class="text-sm text-white/60 truncate">{{ track.album.title }}</div>
                 <div class="text-sm text-white/40 text-center font-mono">{{ track.duration | duration }}</div>
-                
+                <div class="flex justify-end">
+                   <button
+                    tuiIconButton
+                    type="button"
+                    appearance="flat"
+                    size="s"
+                    icon="@tui.ellipsis"
+                    class="!text-white hover:!bg-white/10 rounded-full"
+                    [tuiDropdown]="trackTabMenu"
+                    (click)="$event.stopPropagation()"
+                  >
+                  </button>
+                  <ng-template #trackTabMenu>
+                    <tui-data-list>
+                      <button tuiOption (click)="addToQueue(track)">Add to queue</button>
+                    </tui-data-list>
+                  </ng-template>
+                </div>
               </div>
             }
           </div>
@@ -183,9 +247,15 @@
               <div 
                 class="flex flex-col gap-4 p-4 rounded-2xl hover:bg-white/5 transition-all group cursor-pointer focus-visible:outline-none focus-visible:bg-white/10"
                 tabindex="0"
+                (click)="playAlbum(album)"
               >
-                <div class="aspect-square rounded-lg overflow-hidden shadow-2xl group-hover:shadow-purple-500/20 transition-all group-hover:-translate-y-1 duration-300">
+                <div class="aspect-square rounded-lg overflow-hidden shadow-2xl group-hover:shadow-purple-500/20 transition-all group-hover:-translate-y-1 duration-300 relative">
                   <img [src]="album.cover_medium" [alt]="album.title" class="w-full h-full object-cover">
+                  <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <div class="w-16 h-16 rounded-full bg-purple-600 flex items-center justify-center text-white shadow-xl transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                      <tui-icon icon="@tui.play" class="text-3xl"></tui-icon>
+                    </div>
+                  </div>
                 </div>
                 <div class="flex flex-col gap-1 min-w-0">
                   <span class="font-bold text-white truncate group-hover:text-purple-400 transition-colors">{{ album.title }}</span>
