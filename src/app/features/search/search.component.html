@@ -1,36 +1,224 @@
 <div class="flex flex-col gap-8 pb-12">
+  <!-- Mobile Search Input (Visible only on small screens) -->
   <div class="md:hidden">
     <h1 class="text-3xl font-bold text-white mb-4">Search</h1>
     <div class="relative group">
+      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        <tui-icon icon="@tui.search" class="text-(--tui-text-secondary)"></tui-icon>
+      </div>
       <input 
         type="text" 
+        [value]="store.searchTerm()"
+        (input)="store.setSearchTerm($any($event.target).value)"
         placeholder="Artists, songs, or podcasts" 
-        class="w-full pl-10 pr-4 py-3 bg-[var(--tui-background-elevation-1)] border border-[var(--tui-border-normal)] rounded-xl text-white focus:outline-none focus:border-purple-500 transition-all"
+        class="w-full pl-10 pr-4 py-3 bg-(--tui-background-elevation-1) border border-(--tui-border-normal) rounded-xl text-white focus:outline-none focus:border-purple-500 transition-all"
       >
-      <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--tui-text-secondary)]">🔍</span>
     </div>
   </div>
 
-  <section class="flex flex-col gap-6">
-    <h2 class="text-xl font-bold text-white">Browse all</h2>
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-      @for (genre of [
-        { name: 'Pop', color: 'bg-pink-600' },
-        { name: 'Hip-Hop', color: 'bg-orange-600' },
-        { name: 'Rock', color: 'bg-red-600' },
-        { name: 'Electronic', color: 'bg-purple-600' },
-        { name: 'Jazz', color: 'bg-blue-600' },
-        { name: 'Classical', color: 'bg-indigo-600' },
-        { name: 'K-Pop', color: 'bg-cyan-600' },
-        { name: 'Country', color: 'bg-green-600' },
-        { name: 'Indie', color: 'bg-teal-600' },
-        { name: 'Lofi', color: 'bg-slate-600' }
-      ]; track genre.name) {
-        <div class="relative aspect-[16/10] rounded-xl overflow-hidden cursor-pointer hover:scale-[1.02] transition-transform shadow-lg group {{ genre.color }}">
-          <span class="absolute top-4 left-4 text-lg font-bold text-white">{{ genre.name }}</span>
-          <div class="absolute -bottom-2 -right-4 w-20 h-20 bg-black/20 rotate-12 rounded shadow-2xl group-hover:rotate-6 transition-transform"></div>
-        </div>
+  <!-- Navigation Tabs -->
+  <nav class="flex items-center gap-8 border-b border-white/5 mb-8 pb-1 overflow-x-auto no-scrollbar">
+    @for (tab of ['All', 'Artists', 'Tracks', 'Albums']; track tab) {
+      <button 
+        (click)="store.setActiveTab(tab)"
+        class="pb-3 text-sm font-bold transition-all whitespace-nowrap {{ tab === store.activeTab() ? 'text-white border-b-2 border-purple-500' : 'text-white/60 hover:text-white' }}"
+      >
+        {{ tab }}
+      </button>
+    }
+  </nav>
+
+  @if (firstPageTracks().length > 0 || firstPageArtists().length > 0 || firstPageAlbums().length > 0) {
+    <section class="flex flex-col gap-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      
+      @switch (store.activeTab()) {
+        <!-- ALL VIEW -->
+        @case ('All') {
+          @if (firstPageTracks().length > 0) {
+            @let topResult = firstPageTracks()[0];
+            <!-- Top Result Hero -->
+            <div class="flex flex-col gap-4">
+              <h2 class="text-xl font-bold text-white tracking-tight">Top Result</h2>
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div 
+                  class="lg:col-span-1 p-8 rounded-2xl bg-linear-to-br from-white/10 to-white/5 hover:from-white/15 hover:to-white/10 transition-all cursor-pointer group flex flex-col items-center text-center shadow-2xl relative overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+                  tabindex="0"
+                  (click)="store.setCurrentTrack(topResult)"
+                  (keydown.enter)="store.setCurrentTrack(topResult)"
+                >
+                  <div class="absolute -top-12 -right-12 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl group-hover:bg-purple-500/20 transition-all"></div>
+                  <div class="w-48 h-48 rounded-full overflow-hidden shadow-2xl mb-6 ring-4 ring-transparent group-hover:ring-purple-500/50 transition-all z-10">
+                    <img [src]="getHeroImage(topResult)" [alt]="getHeroTitle(topResult)" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                  </div>
+                  <h3 class="text-3xl font-black text-white mb-2 z-10">{{ getHeroTitle(topResult) }}</h3>
+                  <span class="text-sm text-white/60 uppercase tracking-widest font-bold mb-6 z-10">{{ getHeroSubtitle(topResult) }}</span>
+                  <button class="px-8 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-full font-bold transition-all transform active:scale-95 shadow-lg shadow-purple-500/20 z-10">
+                    Play Now
+                  </button>
+                </div>
+
+                <div class="lg:col-span-2 flex flex-col gap-2">
+                  <div class="flex items-center justify-between">
+                  <h3 class="text-lg font-bold text-white mb-2">Top tracks</h3>
+                  <button (click)="store.setActiveTab('Tracks')" class="text-xs font-bold text-white/60 hover:text-white uppercase tracking-widest border border-white/10 px-3 py-1 rounded-full hover:bg-white/5 transition-all">View all</button>
+                </div>
+                  <div class="flex flex-col gap-1">
+                    @for (track of firstPageTracks().slice(0, 6); track track.id) {
+                      <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group cursor-pointer focus-visible:outline-none" tabindex="0" (click)="store.setCurrentTrack(track)" (keydown.enter)="store.setCurrentTrack(track)">
+                        <img [src]="track.album.cover_small" [alt]="track.title" class="w-12 h-12 rounded shadow-lg">
+                        <div class="flex-1 min-w-0">
+                          <div class="font-bold text-white truncate group-hover:text-purple-400 transition-colors">{{ track.title }}</div>
+                          <div class="text-xs text-white/40 truncate">{{ track.artist.name }}</div>
+                        </div>
+                        <div class="flex items-center gap-5 opacity-0 group-hover:opacity-100 transition-all">
+                          <tui-icon icon="@tui.mic" class="text-white/40 hover:text-white transition-colors" title="Lyrics"></tui-icon>
+                          <tui-icon icon="@tui.heart" class="text-white/40 hover:text-red-500 transition-colors"></tui-icon>
+                          <tui-icon icon="@tui.ellipsis" class="text-white/40 hover:text-white transition-colors"></tui-icon>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+
+          <!-- Artists Overview -->
+          @if (firstPageArtists().length > 0) {
+            <div class="flex flex-col gap-6">
+              <div class="flex items-center justify-between">
+                <h2 class="text-xl font-bold text-white tracking-tight">Artists</h2>
+                <button (click)="store.setActiveTab('Artists')" class="text-xs font-bold text-white/60 hover:text-white uppercase tracking-widest border border-white/10 px-3 py-1 rounded-full hover:bg-white/5 transition-all">View all</button>
+              </div>
+              <div class="flex gap-8 overflow-x-auto no-scrollbar pb-4 -mx-2 px-2">
+                @for (item of firstPageArtists(); track item.id) {
+                  <div 
+                    class="flex flex-col items-center gap-3 min-w-35 group cursor-pointer text-center focus-visible:outline-none"
+                    tabindex="0"
+                  >
+                    <div class="w-32 h-32 rounded-full overflow-hidden shadow-xl group-hover:shadow-purple-500/20 transition-all ring-2 ring-transparent group-hover:ring-purple-500/40">
+                      <img [src]="item.picture_medium" [alt]="item.name" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    </div>
+                    <div class="flex flex-col gap-0.5">
+                      <span class="font-bold text-white truncate w-32 group-hover:text-purple-400 transition-colors">{{ item.name }}</span>
+                      <span class="text-[10px] text-white/40 uppercase font-black">Artist</span>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Albums Overview -->
+          @if (firstPageAlbums().length > 0) {
+            <div class="flex flex-col gap-6">
+              <div class="flex items-center justify-between">
+                <h2 class="text-xl font-bold text-white tracking-tight">Albums</h2>
+                <button (click)="store.setActiveTab('Albums')" class="text-xs font-bold text-white/60 hover:text-white uppercase tracking-widest border border-white/10 px-3 py-1 rounded-full hover:bg-white/5 transition-all">View all</button>
+              </div>
+              <div class="flex gap-8 overflow-x-auto no-scrollbar pb-4 -mx-2 px-2">
+                @for (album of firstPageAlbums(); track album.id) {
+                  <div 
+                    class="flex flex-col gap-3 min-w-40 group cursor-pointer focus-visible:outline-none"
+                    tabindex="0"
+                  >
+                    <div class="w-40 h-40 rounded-lg overflow-hidden shadow-xl group-hover:shadow-purple-500/20 transition-all group-hover:-translate-y-1 duration-300">
+                      <img [src]="album.cover_medium" [alt]="album.title" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex flex-col gap-0.5">
+                      <span class="font-bold text-white truncate w-40 group-hover:text-purple-400 transition-colors">{{ album.title }}</span>
+                      <span class="text-xs text-white/40 truncate w-40">{{ album.artist.name }}</span>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        }
+
+        <!-- ARTISTS TAB -->
+        @case ('Artists') {
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-8 gap-y-12">
+            @for (item of allArtists(); track item.id) {
+              <div 
+                class="flex flex-col items-center gap-4 p-4 rounded-2xl hover:bg-white/5 transition-all group cursor-pointer text-center focus-visible:outline-none focus-visible:bg-white/10"
+                tabindex="0"
+              >
+                <div class="w-40 h-40 rounded-full overflow-hidden shadow-2xl group-hover:shadow-purple-500/20 transition-all ring-2 ring-transparent group-hover:ring-purple-500/40">
+                  <img [src]="item.picture_medium" [alt]="item.name" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                </div>
+                <span class="font-bold text-white text-lg truncate w-full group-hover:text-purple-400 transition-colors">{{ item.name }}</span>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- TRACKS TAB -->
+        @case ('Tracks') {
+          <div class="flex flex-col">
+            @for (track of allTracks(); track track.id) {
+              <div 
+                class="grid grid-cols-[1fr_1fr_1fr_60px] gap-4 p-4 rounded-xl hover:bg-white/5 items-center group cursor-pointer focus-visible:outline-none focus-visible:bg-white/10"
+                tabindex="0"
+                (click)="store.setCurrentTrack(track)"
+                (keydown.enter)="store.setCurrentTrack(track)"
+              >
+                <div class="flex items-center gap-4 min-w-0">
+                  <img [src]="track.album.cover_small" [alt]="track.title" class="w-12 h-12 rounded shadow">
+                  <span class="font-bold text-white truncate">{{ track.title }}</span>
+                </div>
+                <div class="text-sm text-white/60 truncate">{{ track.artist.name }}</div>
+                <div class="text-sm text-white/60 truncate">{{ track.album.title }}</div>
+                <div class="text-sm text-white/40 text-center font-mono">{{ track.duration | duration }}</div>
+                
+              </div>
+            }
+          </div>
+        }
+
+        <!-- ALBUMS TAB -->
+        @case ('Albums') {
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-8 gap-y-12">
+            @for (album of allAlbums(); track album.id) {
+              <div 
+                class="flex flex-col gap-4 p-4 rounded-2xl hover:bg-white/5 transition-all group cursor-pointer focus-visible:outline-none focus-visible:bg-white/10"
+                tabindex="0"
+              >
+                <div class="aspect-square rounded-lg overflow-hidden shadow-2xl group-hover:shadow-purple-500/20 transition-all group-hover:-translate-y-1 duration-300">
+                  <img [src]="album.cover_medium" [alt]="album.title" class="w-full h-full object-cover">
+                </div>
+                <div class="flex flex-col gap-1 min-w-0">
+                  <span class="font-bold text-white truncate group-hover:text-purple-400 transition-colors">{{ album.title }}</span>
+                  <span class="text-sm text-white/40 truncate">{{ album.artist.name }}</span>
+                </div>
+              </div>
+            }
+          </div>
+        }
       }
+
+      <!-- Sentinel for Infinite Scroll -->
+      <div #sentinel class="h-20 flex items-center justify-center">
+        @if (activeQuery()?.isFetchingNextPage()) {
+          <tui-loader [loading]="true" size="m"></tui-loader>
+        }
+      </div>
+    </section>
+  } @else if(!debouncedSearchTerm()){
+    <div class="flex flex-col items-center justify-center py-20 gap-4 opacity-40 animate-in fade-in duration-700">
+      <tui-icon icon="@tui.search" class="w-16 h-16"></tui-icon>
+      <div class="text-center">
+        <h3 class="text-2xl font-bold text-white">Start typing to search for music</h3>
+        <p class="text-sm text-white">Discover artists, albums, and tracks from our vast library.</p>
+      </div>
     </div>
-  </section>
+  }@else {
+    <div class="flex flex-col items-center justify-center py-20 gap-4 opacity-40 animate-in fade-in duration-700">
+      <tui-icon icon="@tui.search" class="w-16 h-16"></tui-icon>
+      <div class="text-center">
+        <h3 class="text-2xl font-bold text-white">No results found for "{{ debouncedSearchTerm() }}"</h3>
+        <p class="text-sm text-white">Please check your spelling or try another keyword.</p>
+      </div>
+    </div>
+  }
 </div>
