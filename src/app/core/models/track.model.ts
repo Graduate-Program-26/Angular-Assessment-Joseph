@@ -13,14 +13,7 @@ export interface Track {
     picture_medium?: string;
     picture_big?: string;
   };
-  album: {
-    id: number;
-    title: string;
-    cover: string;
-    cover_small: string;
-    cover_medium: string;
-    cover_big: string;
-  };
+  album: Album;
 }
 
 export interface Playlist {
@@ -43,10 +36,14 @@ export interface Album {
   id: number;
   title: string;
   cover_medium: string;
+  cover_small: string;
+  cover_big: string;
+  tracklist: string;
   artist: {
     name: string;
   };
   type: 'album';
+  tracks: {data: Track[], total: number};
 }
 
 export type SearchItem = Track | Artist | Album;
