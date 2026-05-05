@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { TuiIcon } from '@taiga-ui/core';
 import { AppStore } from '../../store/app.store';
 
@@ -14,9 +14,16 @@ import { AppStore } from '../../store/app.store';
 })
 export class HeaderComponent {
   protected readonly store = inject(AppStore);
+  protected readonly router = inject(Router);
 
   onSearch(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
     this.store.setSearchTerm(value);
+    this.goToSearch()
+  }
+  goToSearch() {
+    if (this.router.url !== '/search') {
+      this.router.navigate(['/search']);
+    }
   }
 }
