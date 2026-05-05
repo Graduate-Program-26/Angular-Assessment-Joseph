@@ -3,22 +3,31 @@
     <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">History</h1>
     <p class="text-[var(--tui-text-secondary)]">Your recently played tracks and albums.</p>
   </header>
+	<tui-loader [loading]="isLoading()">
+    <div  class="flex flex-col gap-2">
+    @for (track of items(); track track.playedAt) {
+      <div
+        class="flex items-center gap-4 p-3 rounded-xl hover:bg-[var(--tui-background-elevation-1)] transition-colors group cursor-pointer border border-transparent hover:border-[var(--tui-border-normal)]"
+      >
+        <img [src]="track.album.cover_small" [alt]="track.title" class="w-12 h-12 rounded shadow" />
 
-  <div class="flex flex-col gap-2">
-    @for (i of [1,2,3,4,5,6,7,8]; track i) {
-      <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-[var(--tui-background-elevation-1)] transition-colors group cursor-pointer border border-transparent hover:border-[var(--tui-border-normal)]">
-        <div class="w-12 h-12 rounded bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center relative overflow-hidden">
-           <span class="text-xl">🎵</span>
-        </div>
         <div class="flex flex-col flex-1">
-          <span class="text-sm font-semibold text-white">Recently Played Track {{ i }}</span>
-          <span class="text-xs text-[var(--tui-text-secondary)]">Artist Name • Album Title</span>
+          <span class="text-sm font-semibold text-white">{{ track.title }}</span>
+          <span class="text-xs text-[var(--tui-text-secondary)]"
+            >{{ track.artist.name }} • {{ track.album.title }}</span
+          >
         </div>
         <div class="flex flex-col items-end gap-1">
-           <span class="text-xs text-[var(--tui-text-secondary)]">2 hours ago</span>
-           <span class="text-xs text-[var(--tui-text-tertiary)] group-hover:text-white transition-colors">3:45</span>
+          <span class="text-xs text-[var(--tui-text-secondary)]">{{
+            track.playedAt | timeAgo:tick()
+          }}</span>
+          <span
+            class="text-xs text-[var(--tui-text-tertiary)] group-hover:text-white transition-colors"
+            >{{ track.duration | duration }}</span
+          >
         </div>
       </div>
     }
   </div>
+  </tui-loader>
 </div>
