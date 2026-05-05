@@ -27,6 +27,7 @@
     "@taiga-ui/kit": "^5.4.0",
     "@taiga-ui/layout": "^5.4.0",
     "@tanstack/angular-query-experimental": "^5.100.9",
+    "luxon": "^3.7.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
@@ -36,6 +37,7 @@
     "@angular/compiler-cli": "^21.2.0",
     "@eslint/js": "^10.0.1",
     "@tailwindcss/postcss": "^4.1.12",
+    "@types/luxon": "^3.7.1",
     "angular-eslint": "21.3.1",
     "concurrently": "^9.2.1",
     "eslint": "^10.0.3",
