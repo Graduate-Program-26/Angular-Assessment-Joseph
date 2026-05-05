@@ -1,9 +1,9 @@
 
 <!-- ── ROW 1 (mobile) / LEFT THIRD (desktop) ── -->
-<div class="flex items-center gap-3 w-full md:w-1/3 md:min-w-[180px]">
+<div class="flex items-center gap-3 w-full md:w-1/3 md:min-w-45">
   <!-- Album art thumbnail -->
-  <div class="w-10 h-10 md:w-12 md:h-12 bg-[var(--tui-background-elevation-1)] rounded-md shrink-0 flex items-center justify-center border border-[var(--tui-border-normal)]">
-    <tui-icon icon="@tui.music" class="text-[var(--tui-text-secondary)] text-sm"></tui-icon>
+  <div class="w-10 h-10 md:w-12 md:h-12 bg-(--tui-background-elevation-1) rounded-md shrink-0 flex items-center justify-center border border-(--tui-border-normal)">
+    <tui-icon icon="@tui.music" class="text-(--tui-text-secondary) text-sm"></tui-icon>
   </div>
 
   <!-- Track info -->
@@ -11,7 +11,7 @@
     <span class="text-sm font-semibold truncate text-white leading-tight">
       {{ store.currentTrack()?.title || 'Select a track' }}
     </span>
-    <span class="text-xs text-[var(--tui-text-secondary)] truncate leading-tight">
+    <span class="text-xs text-(--tui-text-secondary) truncate leading-tight">
       {{ store.currentTrack()?.artist?.name || 'Artist Name' }}
     </span>
   </div>
@@ -19,7 +19,7 @@
   <!-- Queue toggle: mobile only, right-aligned in row 1 -->
   <button
     (click)="playerUi.toggleQueue()"
-    class="md:hidden flex items-center justify-center w-8 h-8 rounded-full text-[var(--tui-text-secondary)] hover:text-white hover:bg-[var(--tui-background-elevation-1)] transition-all shrink-0"
+    class="md:hidden flex items-center justify-center w-8 h-8 rounded-full text-(--tui-text-secondary) hover:text-white hover:bg-(--tui-background-elevation-1) transition-all shrink-0"
     aria-label="Open queue"
   >
     <tui-icon icon="@tui.list-music" class="text-base"></tui-icon>
@@ -31,25 +31,25 @@
 
   <!-- Playback buttons row -->
   <div class="flex items-center gap-4 md:gap-6 md:mb-1.5">
-    <button class="text-[var(--tui-text-secondary)] hover:text-white transition-colors">
+    <button class="text-(--tui-text-secondary) hover:text-white transition-colors">
       <tui-icon icon="@tui.step-back" class="text-base md:text-lg"></tui-icon>
     </button>
     <button
       (click)="togglePlay()"
-      class="w-9 h-9 md:w-11 md:h-11 flex items-center justify-center rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 text-white hover:scale-105 transition-transform shadow-lg shadow-purple-500/20 shrink-0"
+      class="w-9 h-9 md:w-11 md:h-11 flex items-center justify-center rounded-full bg-linear-to-tr from-purple-500 to-pink-500 text-white hover:scale-105 transition-transform shadow-lg shadow-purple-500/20 shrink-0"
     >
-      <tui-icon [icon]="store.isPlaying() ? '@tui.pause' : '@tui.play'" class="text-base translate-x-[1px]"></tui-icon>
+      <tui-icon [icon]="store.isPlaying() ? '@tui.pause' : '@tui.play'" class="text-base translate-x-px"></tui-icon>
     </button>
-    <button class="text-[var(--tui-text-secondary)] hover:text-white transition-colors">
+    <button class="text-(--tui-text-secondary) hover:text-white transition-colors">
       <tui-icon icon="@tui.step-forward" class="text-base md:text-lg"></tui-icon>
     </button>
   </div>
 
   <!-- Progress bar + timestamps (takes remaining width on mobile row 2) -->
-  <div class="flex flex-1 items-center gap-2 text-xs text-[var(--tui-text-secondary)] md:w-full">
+  <div class="flex flex-1 items-center gap-2 text-xs text-(--tui-text-secondary) md:w-full">
     <span class="tabular-nums shrink-0">0:00</span>
-    <div class="flex-1 h-1 bg-[var(--tui-background-elevation-1)] rounded-full overflow-hidden">
-      <div class="w-0 h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+    <div class="flex-1 h-1 bg-(--tui-background-elevation-1) rounded-full overflow-hidden">
+      <div class="w-0 h-full bg-linear-to-r from-purple-500 to-pink-500 rounded-full"></div>
     </div>
     <span class="tabular-nums shrink-0">0:30</span>
   </div>
@@ -58,8 +58,8 @@
 
 <!-- ── DESKTOP ONLY: RIGHT THIRD (Volume) ── -->
 <div class="hidden md:flex items-center justify-end gap-3 w-1/3">
-  <tui-icon icon="@tui.volume-2" class="text-[var(--tui-text-secondary)] text-sm shrink-0"></tui-icon>
-  <div class="w-24 h-1 bg-[var(--tui-background-elevation-1)] rounded-full overflow-hidden">
-    <div class="w-2/3 h-full bg-[var(--tui-text-secondary)] rounded-full"></div>
+  <tui-icon icon="@tui.volume-2" class="text-(--tui-text-secondary) text-sm shrink-0"></tui-icon>
+  <div class="w-24 h-1 bg-(--tui-background-elevation-1) rounded-full overflow-hidden">
+    <div class="w-2/3 h-full bg-(--tui-text-secondary) rounded-full"></div>
   </div>
 </div>
