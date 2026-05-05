@@ -1,5 +1,9 @@
+import { inject } from '@angular/core';
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
-import { Track } from '../models/track.model';
+import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { debounceTime, distinctUntilChanged, forkJoin, pipe, switchMap, tap } from 'rxjs';
+import { Album, Artist, Track } from '../models/track.model';
+import { DeezerService } from '../services/deezer.service';
 
 export interface AppState {
   currentTrack: Track | null;
@@ -7,6 +11,7 @@ export interface AppState {
   volume: number;
   queue: Track[];
   searchTerm: string;
+  activeTab: string;
 }
 
 const initialState: AppState = {
@@ -15,6 +20,7 @@ const initialState: AppState = {
   volume: 80,
   queue: [],
   searchTerm: '',
+  activeTab: 'All',
 };
 
 export const AppStore = signalStore(
@@ -32,6 +38,9 @@ export const AppStore = signalStore(
     },
     setSearchTerm(searchTerm: string): void {
       patchState(store, { searchTerm });
+    },
+    setActiveTab(activeTab: string): void {
+      patchState(store, { activeTab });
     },
     addToQueue(track: Track): void {
       patchState(store, { queue: [...store.queue(), track] });
