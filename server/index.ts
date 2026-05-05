@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import * as admin from 'firebase-admin';
 import dotenv from 'dotenv';
@@ -9,6 +9,18 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env['PORT'] || 3000;
+
+interface DeezerTrack {
+  id: number;
+  title: string;
+  [key: string]: any;
+}
+
+interface DeezerTracklist {
+  data: DeezerTrack[];
+  total: number;
+  next?: string;
+}
 
 // Path to the Angular build artifacts
 const DIST_FOLDER = path.join(__dirname, '../dist/DeeJay/browser');
@@ -37,14 +49,14 @@ if (process.env['FIREBASE_SERVICE_ACCOUNT']) {
 /**
  * Deezer Proxy Routes
  */
-app.get('/api/search/:type', async (req, res) => {
+app.get('/api/search/:type', async (req: Request, res: Response) => {
   try {
     const { type } = req.params;
     const query = req.query['q'] || 'top';
     const index = req.query['index'] || '0';
     
     // Map internal types to Deezer endpoints
-    const endpoint = type === 'tracks' ? 'search' : `search/${type.slice(0, -1)}`;
+    const endpoint = type === 'tracks' ? 'search' : `search/${type!.slice(0, -1)}`;
     
     const response = await fetch(`https://api.deezer.com/${endpoint}?q=${query}&index=${index}&limit=25`);
     const data = await response.json();
@@ -55,7 +67,27 @@ app.get('/api/search/:type', async (req, res) => {
   }
 });
 
-app.get('/api/chart', async (req, res) => {
+//get album tracks 
+app.get('/api/album/:id/tracks', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const response = await fetch(`https://api.deezer.com/album/${id}/tracks`);
+    const tracklist = (await response.json()) as DeezerTracklist;
+    
+    // use track id to fetch complete track data for each track in the tracklist and return it as a list 
+    const trackPromises = tracklist.data.map((track: DeezerTrack) => 
+      fetch(`https://api.deezer.com/track/${track.id}`).then(r => r.json())
+    );
+    
+    const tracks = await Promise.all(trackPromises);
+    res.json({ data: tracks });
+  } catch (error) {
+    console.error('Deezer album tracks error:', error);
+    res.status(500).json({ error: 'Failed to fetch from Deezer' });
+  }
+});
+
+app.get('/api/chart', async (req: Request, res: Response) => {
   try {
     const response = await fetch('https://api.deezer.com/chart');
     const data = await response.json();
@@ -69,7 +101,7 @@ app.get('/api/chart', async (req, res) => {
 // Production: Serve static files and handle Angular routing
 if (process.env['NODE_ENV'] === 'production') {
   app.use(express.static(actualDistFolder));
-  app.get('*', (req, res) => {
+  app.get('*', (req: Request, res: Response) => {
     res.sendFile(path.join(actualDistFolder, 'index.html'));
   });
 }
