@@ -31,4 +31,8 @@ export class DeezerService {
   getAlbumTracks(albumId: number): Observable<{ data: Track[] }> {
     return this.http.get<{ data: Track[] }>(`${this.apiUrl}/album/${albumId}/tracks`);
   }
+
+  getTrack(trackId: number): Observable<Track> {
+    return this.http.get<Track>(`${this.apiUrl}/track/${trackId}`);
+  }
 }
