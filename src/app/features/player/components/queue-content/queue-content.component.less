@@ -1,0 +1,20 @@
+@import '@taiga-ui/styles/utils.less';
+
+.tiles {
+    gap: 1rem;
+    grid-auto-rows: minmax(2.75rem, auto);
+}
+
+
+.handle {
+    .transition(opacity);
+    display: block;
+    background: var(--tui-background-base);
+    opacity: 0.3;
+    cursor: move;
+
+    tui-tiles:not(._dragged) tui-tile:hover &,
+    tui-tile._dragged & {
+        opacity: 0.7;
+    }
+}
