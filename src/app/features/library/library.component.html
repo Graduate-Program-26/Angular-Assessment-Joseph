@@ -1,25 +1,30 @@
 <div class="flex flex-col gap-8 pb-12">
   <header>
-    <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">Library</h1>
+    <h1 class="text-3xl md:text-4xl font-bold text-var(--tui-text-action) mb-2">Library</h1>
     <p class="text-[var(--tui-text-secondary)]">Your liked songs, artists, and albums.</p>
   </header>
 
   <div class="flex items-center gap-4 border-b border-[var(--tui-border-normal)]">
     @for (tab of ['Playlists', 'Artists', 'Albums', 'Songs']; track tab) {
-      <button class="px-4 py-3 text-sm font-medium text-[var(--tui-text-secondary)] hover:text-white relative group">
-        {{ tab }}
-        <div class="absolute bottom-0 left-0 w-full h-0.5 bg-purple-500 scale-x-0 group-hover:scale-x-100 transition-transform"></div>
-      </button>
+    <button
+      class="px-4 py-3 text-sm font-medium text-[var(--tui-text-secondary)] hover:text-var(--tui-text-action) relative group">
+      {{ tab }}
+      <div
+        class="absolute bottom-0 left-0 w-full h-0.5 bg-purple-500 scale-x-0 group-hover:scale-x-100 transition-transform">
+      </div>
+    </button>
     }
   </div>
 
   <div class="flex flex-col items-center justify-center py-20 text-center gap-4">
-    <div class="w-20 h-20 rounded-full bg-[var(--tui-background-elevation-1)] flex items-center justify-center text-4xl mb-2">
+    <div
+      class="w-20 h-20 rounded-full bg-[var(--tui-background-elevation-1)] flex items-center justify-center text-4xl mb-2">
       📚
     </div>
-    <h2 class="text-xl font-bold text-white">Your library is empty</h2>
+    <h2 class="text-xl font-bold text-var(--tui-text-action)">Your library is empty</h2>
     <p class="text-[var(--tui-text-secondary)] max-w-sm">Start saving your favorite music and it will show up here.</p>
-    <button class="mt-4 px-6 py-2 rounded-full border border-purple-500 text-purple-400 hover:bg-purple-500/10 transition-colors font-medium">
+    <button
+      class="mt-4 px-6 py-2 rounded-full border border-purple-500 text-purple-400 hover:bg-purple-500/10 transition-colors font-medium">
       Explore music
     </button>
   </div>

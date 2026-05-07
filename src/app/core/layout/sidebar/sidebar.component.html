@@ -1,20 +1,15 @@
 <nav aria-label="Main navigation">
   <ul class="flex flex-col gap-0.5 px-3">
     @for (item of navItems; track item.route) {
-      <li>
-        <a
-          [routerLink]="item.route"
-          routerLinkActive="bg-[var(--tui-background-elevation-2)] text-white"
-          [routerLinkActiveOptions]="{ exact: item.exact }"
-          class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[var(--tui-text-secondary)] hover:text-white hover:bg-[var(--tui-background-elevation-1)] transition-all duration-150 font-medium text-sm group"
-        >
-          <tui-icon
-            [icon]="item.icon"
-            class="text-lg shrink-0 group-hover:scale-110 transition-transform duration-150"
-          ></tui-icon>
-          {{ item.label }}
-        </a>
-      </li>
+    <li>
+      <a [routerLink]="item.route" routerLinkActive="bg-[var(--tui-background-elevation-2)] text-var(--tui-text-action)"
+        [routerLinkActiveOptions]="{ exact: item.exact }"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[var(--tui-text-secondary)] hover:text-var(--tui-text-action) hover:bg-[var(--tui-background-elevation-1)] transition-all duration-150 font-medium text-sm group">
+        <tui-icon [icon]="item.icon"
+          class="text-lg shrink-0 group-hover:scale-110 transition-transform duration-150"></tui-icon>
+        {{ item.label }}
+      </a>
+    </li>
     }
   </ul>
 </nav>

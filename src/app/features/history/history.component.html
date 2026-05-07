@@ -1,33 +1,39 @@
 <div class="flex flex-col gap-8 pb-12">
   <header>
-    <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">History</h1>
+    <h1 class="text-3xl md:text-4xl font-bold text-var(--tui-text-action) mb-2">History</h1>
     <p class="text-[var(--tui-text-secondary)]">Your recently played tracks and albums.</p>
   </header>
-	<tui-loader [loading]="isLoading()">
-    <div  class="flex flex-col gap-2">
-    @for (track of items(); track track.playedAt) {
+  <tui-loader [loading]="isLoading()">
+    <div class="flex flex-col gap-2">
+      @for (track of items(); track track.playedAt) {
       <div
-        class="flex items-center gap-4 p-3 rounded-xl hover:bg-[var(--tui-background-elevation-1)] transition-colors group cursor-pointer border border-transparent hover:border-[var(--tui-border-normal)]"
-      >
-        <img [src]="track.album.cover_small" [alt]="track.title" class="w-12 h-12 rounded shadow" />
-
+        class="flex items-center gap-4 p-3 rounded-xl hover:bg-[var(--tui-background-elevation-1)] focus-within:bg-[var(--tui-background-elevation-1)]   transition-colors group cursor-pointer border border-transparent focus-within::border-[var(--tui-border-normal)]">
+        <div (click)="playtrack(track)" (keyup.enter)="playtrack(track)" tabindex="0"
+          class="aspect-square rounded-lg overflow-hidden shadow-2xl focus group-hover:shadow-purple-500/20 group-focus:shadow-purple-500/20 transition-all group-focus:-translate-y-1 group-hover:-translate-y-1 duration-300 relative">
+          <img [src]="track.album.cover_medium" [alt]="track.title" class="w-15 h-15 object-cover">
+          <div
+            class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+            <div
+              class="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center text-var(--tui-text-action) shadow-xl transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+              <tui-icon icon="@tui.play" class="text-3xl"></tui-icon>
+            </div>
+          </div>
+        </div>
         <div class="flex flex-col flex-1">
-          <span class="text-sm font-semibold text-white">{{ track.title }}</span>
-          <span class="text-xs text-[var(--tui-text-secondary)]"
-            >{{ track.artist.name }} • {{ track.album.title }}</span
-          >
+          <span class="text-sm font-semibold text-var(--tui-text-action)">{{ track.title }}</span>
+          <span class="text-xs text-[var(--tui-text-secondary)]">{{ track.artist.name }} • {{ track.album.title
+            }}</span>
         </div>
         <div class="flex flex-col items-end gap-1">
           <span class="text-xs text-[var(--tui-text-secondary)]">{{
             track.playedAt | timeAgo:tick()
-          }}</span>
+            }}</span>
           <span
-            class="text-xs text-[var(--tui-text-tertiary)] group-hover:text-white transition-colors"
-            >{{ track.duration | duration }}</span
-          >
+            class="text-xs text-[var(--tui-text-tertiary)] group-hover:text-var(--tui-text-action) transition-colors">{{
+            track.duration | duration }}</span>
         </div>
       </div>
-    }
-  </div>
+      }
+    </div>
   </tui-loader>
 </div>
