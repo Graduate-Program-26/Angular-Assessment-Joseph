@@ -1,12 +1,15 @@
 import { Component, DestroyRef, effect, inject, signal } from '@angular/core';
-import { HistoryItem, HistoryService } from '../../core/services/history.service';
+import { HistoryService } from '../../core/services/history.service';
 import { TimeAgoPipe } from '../../core/pipes/time-ago.pipe';
 import { DurationPipe } from '../../core/pipes/duration.pipe';
-import { TuiLoader, tuiLoaderOptionsProvider } from '@taiga-ui/core';
+import { TuiLoader, tuiLoaderOptionsProvider, TuiIcon } from '@taiga-ui/core';
+import { AppStore } from '../../core/store/app.store';
+import { HistoryItem } from '../../core/services/indexed-db.service';
+
 
 @Component({
   selector: 'app-history',
-  imports: [TimeAgoPipe, DurationPipe, TuiLoader],
+  imports: [TimeAgoPipe, DurationPipe, TuiLoader, TuiIcon],
   standalone: true,
   templateUrl: './history.component.html',
   providers: [
@@ -19,11 +22,16 @@ import { TuiLoader, tuiLoaderOptionsProvider } from '@taiga-ui/core';
 })
 export class HistoryComponent {
   private readonly historyService = inject(HistoryService);
+  private readonly store = inject(AppStore);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly isLoading = signal(true);
   readonly items = signal<HistoryItem[]>([]);
   readonly tick = signal(0);
+
+  playtrack(track: HistoryItem): void {
+    this.store.playTrackNow(track);
+  }
 
   constructor() {
     effect(() => {

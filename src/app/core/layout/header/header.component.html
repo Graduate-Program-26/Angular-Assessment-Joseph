@@ -1,9 +1,9 @@
-
 <div class="flex items-center gap-3 w-1/4 min-w-37.5">
   <div class="w-8 h-8 rounded-full bg-linear-to-tr from-purple-500 to-pink-500 flex items-center justify-center">
-    <tui-icon icon="@tui.music" class="text-white text-base"></tui-icon>
+    <tui-icon icon="@tui.music" class="text-var(--tui-text-action) text-base"></tui-icon>
   </div>
-  <a routerLink="/" class="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-r from-purple-400 to-pink-400 hover:opacity-80 transition-opacity">
+  <a routerLink="/"
+    class="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-r from-purple-400 to-pink-400 hover:opacity-80 transition-opacity">
     DeeJay
   </a>
 </div>
@@ -11,22 +11,20 @@
 <div class="flex-1 max-w-2xl hidden md:flex items-center justify-center">
   <div class="w-full max-w-md relative group">
     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-      <tui-icon icon="@tui.search" class="text-(--tui-text-secondary) group-focus-within:text-purple-400 transition-colors"></tui-icon>
+      <tui-icon icon="@tui.search"
+        class="text-(--tui-text-secondary) group-focus-within:text-purple-400 transition-colors"></tui-icon>
     </div>
-    <input 
-      type="text" 
-      placeholder="Search songs, albums, artists" 
-      (input)="onSearch($event)"
-      class="w-full pl-10 pr-4 py-2 bg-(--tui-background-elevation-2) border border-(--tui-border-normal) rounded-full text-white placeholder-(--tui-text-secondary) focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
-    >
+    <input type="text" placeholder="Search songs, albums, artists" (input)="onSearch($event)"
+      class="w-full pl-10 pr-4 py-2 bg-(--tui-background-elevation-2) border border-(--tui-border-normal) rounded-full text-var(--tui-text-action) placeholder-(--tui-text-secondary) focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all">
   </div>
 </div>
 
 <div class="flex items-center justify-end gap-4 w-1/4 min-w-37.5">
-  <button class="md:hidden text-(--tui-text-secondary) hover:text-white transition-colors">
+  <button class="md:hidden text-(--tui-text-secondary) hover:text-var(--tui-text-action) transition-colors">
     <tui-icon icon="@tui.search" class="text-xl"></tui-icon>
   </button>
-  <button class="w-8 h-8 rounded-full bg-purple-900 border border-purple-500/50 flex items-center justify-center text-white font-medium hover:scale-105 transition-transform">
+  <button
+    class="w-8 h-8 rounded-full bg-purple-900 border border-purple-500/50 flex items-center justify-center text-var(--tui-text-action) font-medium hover:scale-105 transition-transform">
     J
   </button>
 </div>

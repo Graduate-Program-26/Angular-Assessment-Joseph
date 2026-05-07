@@ -1,74 +1,26 @@
 @if (playerUi.isQueueOpen()) {
-  <!-- Backdrop -->
-  <div
-    class="absolute inset-0 bg-black/60 backdrop-blur-sm pointer-events-auto"
-    (click)="playerUi.closeQueue()"
-    aria-hidden="true"
-  ></div>
+<!-- Backdrop -->
+<div class="absolute inset-0 bg-black/60 backdrop-blur-sm pointer-events-auto" (click)="playerUi.closeQueue()"
+  aria-hidden="true"></div>
 
-  <!-- Drawer panel: slides up from bottom -->
-  <div
-    class="absolute bottom-0 left-0 right-0 pointer-events-auto flex flex-col rounded-t-2xl bg-[var(--tui-background-elevation-2)] border-t border-[var(--tui-border-normal)] max-h-[80dvh] animate-slide-up"
-    role="dialog"
-    aria-label="Queue"
-    aria-modal="true"
-  >
-    <!-- Drag handle -->
-    <div class="flex justify-center pt-3 pb-1">
-      <div class="w-10 h-1 rounded-full bg-[var(--tui-border-normal)]"></div>
-    </div>
-
-    <!-- Header -->
-    <div class="flex items-center justify-between px-5 py-3 border-b border-[var(--tui-border-normal)]">
-      <h2 class="text-base font-semibold text-white">Up Next</h2>
-      <button
-        (click)="playerUi.closeQueue()"
-        class="w-8 h-8 flex items-center justify-center rounded-full text-[var(--tui-text-secondary)] hover:text-white hover:bg-[var(--tui-background-elevation-1)] transition-all"
-        aria-label="Close queue"
-      >
-        <tui-icon icon="@tui.x" class="text-base"></tui-icon>
-      </button>
-    </div>
-
-    <!-- Queue content -->
-    <div class="flex-1 overflow-y-auto px-5 py-4">
-      @if (store.queue().length > 0) {
-        <div class="flex flex-col gap-2">
-          @for (track of store.queue(); track track.id) {
-            <div 
-              (click)="store.setCurrentTrack(track)"
-              class="flex items-center gap-4 p-3 rounded-xl transition-all"
-              [class.bg-purple-500/10]="store.currentTrack()?.id === track.id"
-              [class.bg-white/5]="store.currentTrack()?.id !== track.id"
-            >
-              <img [src]="track.album.cover_small" [alt]="track.title" class="w-12 h-12 rounded shadow-md shrink-0">
-              <div class="flex flex-col min-w-0 flex-1">
-                <span class="text-sm font-bold text-white truncate" [class.text-purple-400]="store.currentTrack()?.id === track.id">
-                  {{ track.title }}
-                </span>
-                <span class="text-xs text-white/40 truncate">{{ track.artist.name }}</span>
-              </div>
-              @if (store.currentTrack()?.id === track.id && store.isPlaying()) {
-                <div class="flex gap-0.5 items-end h-3 px-2">
-                  <div class="w-0.5 bg-purple-500 animate-[bounce_0.6s_infinite]"></div>
-                  <div class="w-0.5 bg-purple-500 animate-[bounce_0.8s_infinite]"></div>
-                  <div class="w-0.5 bg-purple-500 animate-[bounce_0.7s_infinite]"></div>
-                </div>
-              } @else {
-                <span class="text-[10px] text-white/20 font-mono">{{ track.duration | duration }}</span>
-              }
-            </div>
-          }
-        </div>
-      } @else {
-        <div class="flex flex-col items-center justify-center gap-3 text-center py-10">
-          <div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center">
-            <tui-icon icon="@tui.list-music" class="text-white/20 text-xl"></tui-icon>
-          </div>
-          <p class="text-sm text-white/40">No tracks in queue</p>
-          <p class="text-xs text-white/20">Start playing a track to see what's up next</p>
-        </div>
-      }
-    </div>
+<!-- Drawer panel: slides up from bottom -->
+<div
+  class="absolute bottom-0 left-0 right-0 pointer-events-auto flex flex-col rounded-t-2xl bg-[var(--tui-background-elevation-2)] border-t border-[var(--tui-border-normal)] max-h-[80dvh] animate-slide-up"
+  role="dialog" aria-label="Queue" aria-modal="true">
+  <!-- Drag handle -->
+  <div class="flex justify-center pt-3 pb-1">
+    <div class="w-10 h-1 rounded-full bg-[var(--tui-border-normal)]"></div>
   </div>
+
+  <!-- Header -->
+  <div class="flex items-center justify-between px-5 py-3 border-b border-[var(--tui-border-normal)]">
+    <h2 class="text-base font-semibold text-var(--tui-text-action)">Up Next</h2>
+    <button (click)="playerUi.closeQueue()"
+      class="w-8 h-8 flex items-center justify-center rounded-full text-[var(--tui-text-secondary)] hover:text-var(--tui-text-action) hover:bg-[var(--tui-background-elevation-1)] transition-all"
+      aria-label="Close queue">
+      <tui-icon icon="@tui.x" class="text-base"></tui-icon>
+    </button>
+  </div>
+  <app-queue-content />
+</div>
 }

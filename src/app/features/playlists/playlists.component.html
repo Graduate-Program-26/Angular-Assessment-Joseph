@@ -1,31 +1,36 @@
 <div class="flex flex-col gap-8 pb-12">
   <header class="flex flex-col md:flex-row md:items-end justify-between gap-4">
     <div class="flex flex-col gap-2">
-      <h1 class="text-3xl md:text-4xl font-bold text-white">Your Playlists</h1>
+      <h1 class="text-3xl md:text-4xl font-bold text-var(--tui-text-action)">Your Playlists</h1>
       <p class="text-(--tui-text-secondary)">Manage and explore your personal collection.</p>
     </div>
-    <button class="px-6 py-3 rounded-full bg-linear-to-r from-purple-500 to-pink-500 text-white font-bold hover:scale-105 transition-transform shadow-lg shadow-purple-500/20">
+    <button
+      class="px-6 py-3 rounded-full bg-linear-to-r from-purple-500 to-pink-500 text-var(--tui-text-action) font-bold hover:scale-105 transition-transform shadow-lg shadow-purple-500/20">
       Create new playlist
     </button>
   </header>
 
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
     @for (i of [1,2,3,4]; track i) {
-      <div class="flex flex-col gap-4 p-4 rounded-2xl bg-(--tui-background-elevation-1) border border-(--tui-border-normal) hover:bg-(--tui-background-elevation-2) transition-all group cursor-pointer">
-        <div class="aspect-square w-full rounded-xl bg-linear-to-br from-gray-800 to-gray-900 flex items-center justify-center">
-           <span class="text-4xl">🎵</span>
-        </div>
-        <div class="flex flex-col">
-          <h3 class="font-bold text-white group-hover:text-purple-400 transition-colors">My Awesome Playlist #{{ i }}</h3>
-          <span class="text-sm text-(--tui-text-secondary)">0 songs • 0 min</span>
-        </div>
+    <div
+      class="flex flex-col gap-4 p-4 rounded-2xl bg-(--tui-background-elevation-1) border border-(--tui-border-normal) hover:bg-(--tui-background-elevation-2) transition-all group cursor-pointer">
+      <div
+        class="aspect-square w-full rounded-xl bg-linear-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+        <span class="text-4xl">🎵</span>
       </div>
+      <div class="flex flex-col">
+        <h3 class="font-bold text-var(--tui-text-action) group-hover:text-purple-400 transition-colors">My Awesome
+          Playlist #{{ i }}</h3>
+        <span class="text-sm text-(--tui-text-secondary)">0 songs • 0 min</span>
+      </div>
+    </div>
     }
-    
+
     <!-- Empty State / Add New -->
-    <div class="flex flex-col items-center justify-center aspect-square rounded-2xl border-2 border-dashed border-(--tui-border-normal) hover:border-purple-500 hover:bg-purple-500/5 transition-all group cursor-pointer">
-       <span class="text-4xl mb-2 group-hover:scale-110 transition-transform">+</span>
-       <span class="text-sm font-medium text-(--tui-text-secondary) group-hover:text-purple-400">New playlist</span>
+    <div
+      class="flex flex-col items-center justify-center aspect-square rounded-2xl border-2 border-dashed border-(--tui-border-normal) hover:border-purple-500 hover:bg-purple-500/5 transition-all group cursor-pointer">
+      <span class="text-4xl mb-2 group-hover:scale-110 transition-transform">+</span>
+      <span class="text-sm font-medium text-(--tui-text-secondary) group-hover:text-purple-400">New playlist</span>
     </div>
   </div>
 </div>
