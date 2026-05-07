@@ -67,6 +67,17 @@ app.get('/api/search/:type', async (req: Request, res: Response) => {
   }
 });
 
+app.get('/api/track/:id', async(req:Request, res:Response)=>{
+  try {
+    const {id} = req.params;
+    const response = await fetch(`https://api.deezer.com/track/${id}`);
+    const track = await response.json();
+    res.json(track);
+  } catch {
+    res.status(500).json({ error: 'Failed to fetch from Deezer' });
+  }
+})
+
 //get album tracks 
 app.get('/api/album/:id/tracks', async (req: Request, res: Response) => {
   try {
