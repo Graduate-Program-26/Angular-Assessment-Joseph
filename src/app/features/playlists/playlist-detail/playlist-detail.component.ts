@@ -7,37 +7,38 @@ import { TuiIcon, TuiButton, TuiDropdown, TuiDropdownOpen, TuiDataList, TuiDialo
 import { AppStore } from '../../../core/store/app.store';
 import { Track } from '../../../core/models/track.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TrackCardComponent } from '../../../shared/components/track-card/track-card.component';
 
 @Component({
   selector: 'app-playlist-detail',
   standalone: true,
-  imports: [RouterLink, TuiIcon, TuiButton, TuiDropdown, TuiDropdownOpen, TuiDataList],
+  imports: [RouterLink, TuiIcon, TuiButton, TuiDropdown, TuiDropdownOpen, TuiDataList, TrackCardComponent],
   template: `
     @if (playlist(); as p) {
-      <div class="flex flex-col gap-8 pb-12">
+      <div class="flex flex-col gap-8 pb-12 animate-in fade-in duration-700">
         <!-- Header -->
-        <header class="flex flex-col md:flex-row items-start md:items-end gap-6">
-          <div class="w-48 h-48 rounded-2xl bg-linear-to-br from-purple-600 to-pink-600 flex items-center justify-center shadow-2xl">
-            <span class="text-6xl">🎵</span>
+        <header class="flex flex-col md:flex-row items-start md:items-end gap-8 bg-linear-to-b from-purple-900/20 to-transparent -mt-8 -mx-8 p-8 md:p-12">
+          <div class="w-56 h-56 rounded-2xl bg-linear-to-br from-purple-600 to-pink-600 flex items-center justify-center shadow-2xl shrink-0 group">
+            <span class="text-7xl group-hover:scale-110 transition-transform duration-500">🎵</span>
           </div>
           
-          <div class="flex flex-col gap-2 flex-1">
+          <div class="flex flex-col gap-3 flex-1 min-w-0">
             <span class="text-xs font-bold uppercase tracking-widest text-purple-400">Playlist</span>
-            <h1 class="text-4xl md:text-6xl font-bold text-var(--tui-text-primary)">{{ p.name }}</h1>
-            <div class="flex items-center gap-2 text-sm text-(--tui-text-secondary)">
+            <h1 class="text-4xl md:text-7xl font-black text-var(--tui-text-primary) tracking-tighter truncate">{{ p.name }}</h1>
+            <div class="flex items-center gap-3 text-sm font-medium text-(--tui-text-secondary)">
               <span class="font-bold text-var(--tui-text-primary)">{{ p.createdBy }}</span>
               <span>•</span>
               <span>{{ p.tracks.length }} tracks</span>
             </div>
           </div>
 
-          <div class="flex gap-2">
-             <button tuiButton appearance="flat" size="m" shape="rounded" (click)="playAll()" [disabled]="p.tracks.length === 0">
+          <div class="flex gap-3">
+             <button tuiButton appearance="accent" size="l" shape="rounded" (click)="playAll()" [disabled]="p.tracks.length === 0">
                <tui-icon icon="@tui.play" class="mr-2"></tui-icon> Play All
              </button>
              
              <div class="relative" [tuiDropdown]="menu" [(tuiDropdownOpen)]="menuOpen">
-               <button tuiIconButton appearance="flat" size="m" shape="rounded" iconStart="@tui.more-vertical" (click)="menuOpen = !menuOpen"></button>
+               <button tuiIconButton appearance="flat" size="l" shape="rounded" iconStart="@tui.more-vertical" (click)="menuOpen = !menuOpen"></button>
                <ng-template #menu>
                  <tui-data-list>
                    <button tuiOption (click)="deletePlaylist()">
@@ -50,51 +51,30 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
         </header>
 
         <!-- Track List -->
-        <div class="flex flex-col">
-          <div class="grid grid-cols-[48px_1fr_1fr_48px] gap-4 px-4 py-2 text-xs font-bold uppercase tracking-widest text-(--tui-text-secondary) border-b border-(--tui-border-normal) mb-2">
-            <span>#</span>
+        <div class="flex flex-col gap-1">
+          <div class="grid grid-cols-[48px_1fr_48px] gap-4 px-4 py-2 text-xs font-bold uppercase tracking-widest text-(--tui-text-secondary) border-b border-(--tui-border-normal) mb-4">
+            <span class="text-center">#</span>
             <span>Title</span>
-            <span class="hidden md:block">Album</span>
             <span></span>
           </div>
 
           @for (track of p.tracks; track track.id; let i = $index) {
-            <div (click)="playTrack(track)"
-                 class="grid grid-cols-[40px_1fr_40px] md:grid-cols-[48px_1fr_1fr_48px] gap-2 md:gap-4 px-2 md:px-4 py-3 rounded-xl hover:bg-(--tui-background-elevation-2) transition-colors group cursor-pointer items-center">
-              
-              <div class="flex items-center justify-center">
-                <span class="text-xs text-(--tui-text-secondary) md:group-hover:hidden">{{ i + 1 }}</span>
-                <tui-icon icon="@tui.play" class="hidden md:group-hover:block text-purple-400 text-xs"></tui-icon>
-              </div>
-              
-              <div class="flex items-center gap-3 min-w-0">
-                <img [src]="track.album.cover_small" class="w-10 h-10 rounded-md shadow-lg shrink-0" alt="">
-                <div class="flex flex-col truncate">
-                  <span class="font-bold text-sm md:text-base text-var(--tui-text-primary) truncate">{{ track.title }}</span>
-                  <span class="text-xs md:text-sm text-(--tui-text-secondary) truncate">{{ track.artist.name }}</span>
-                </div>
-              </div>
-
-              <span class="text-sm text-(--tui-text-secondary) truncate hidden md:block">{{ track.album.title }}</span>
-
-              <div class="flex justify-end gap-2">
-                <button tuiIconButton appearance="flat" size="s" shape="rounded" 
-                        [iconStart]="likedIds().has(track.id) ? '@tui.heart-filled' : '@tui.heart'"
-                        class="!text-(--tui-text-secondary) hover:!text-red-500 rounded-full md:opacity-0 md:group-hover:opacity-100 transition-all"
-                        [class.!text-red-500]="likedIds().has(track.id)"
-                        (click)="$event.stopPropagation(); toggleLike(track)"></button>
-                <button tuiIconButton appearance="flat" size="s" shape="rounded" iconStart="@tui.x" 
-                        class="text-red-400 md:opacity-0 md:group-hover:opacity-100 transition-all"
-                        (click)="$event.stopPropagation(); removeTrack(track.id)"></button>
-              </div>
-            </div>
+            <app-track-card 
+              [track]="track" 
+              [index]="i + 1" 
+              [showIndex]="true" 
+              [showRemove]="true"
+              (remove)="removeTrack($event.id)"></app-track-card>
           }
 
           @if (p.tracks.length === 0) {
-            <div class="flex flex-col items-center justify-center py-20 gap-4">
-              <tui-icon icon="@tui.music" class="text-6xl text-gray-800"></tui-icon>
-              <p class="text-(--tui-text-secondary)">This playlist is empty. Add some tracks from Search or Explore!</p>
-              <a routerLink="/search" tuiButton appearance="outline" size="s" shape="rounded">Go to Search</a>
+            <div class="flex flex-col items-center justify-center py-20 gap-4 animate-in zoom-in duration-500">
+              <div class="w-24 h-24 rounded-full bg-purple-500/10 flex items-center justify-center mb-4">
+                <tui-icon icon="@tui.music" class="text-5xl text-purple-500 opacity-50"></tui-icon>
+              </div>
+              <h2 class="text-xl font-bold text-(--tui-text-primary)">Your playlist is empty</h2>
+              <p class="text-(--tui-text-secondary) max-w-sm text-center">Add some tracks from Search or Explore to get started!</p>
+              <a routerLink="/search" tuiButton appearance="outline" size="s" shape="rounded" class="mt-4">Find music</a>
             </div>
           }
         </div>
@@ -115,7 +95,6 @@ export class PlaylistDetailComponent {
   private readonly destroyRef = inject(DestroyRef);
 
   readonly playlist = signal<Playlist | null>(null);
-  protected readonly likedIds = this.playlistService.likedTrackIds;
   protected menuOpen = false;
 
   constructor() {
@@ -133,15 +112,6 @@ export class PlaylistDetailComponent {
       return;
     }
     this.playlist.set(p);
-  }
-
-  playTrack(track: Track) {
-    this.store.setQueue(this.playlist()?.tracks || []);
-    this.store.setCurrentTrack(track);
-  }
-
-  toggleLike(track: Track) {
-    this.playlistService.toggleLike(track);
   }
 
   playAll() {

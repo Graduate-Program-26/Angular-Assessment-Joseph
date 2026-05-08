@@ -1,4 +1,4 @@
-<div class="flex flex-col gap-12 pb-12">
+<div class="flex flex-col gap-12 pb-12 animate-in fade-in duration-700">
   <header class="flex flex-col gap-2">
     <h1 class="text-4xl md:text-5xl font-black text-var(--tui-text-primary) tracking-tighter">Good morning</h1>
     <p class="text-[var(--tui-text-secondary)]">Here's what we've picked for you today.</p>
@@ -12,51 +12,48 @@
         <a routerLink="/history" class="text-sm font-bold text-purple-400 hover:underline">View all</a>
       </div>
 
-      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
         @for (track of recentlyPlayed(); track track.playedAt) {
-        <div class="flex flex-col gap-3 group cursor-pointer" (click)="playTrack(track)">
-          <div class="aspect-square w-full rounded-xl overflow-hidden shadow-lg relative">
-            <img [src]="track.album.cover_medium" [alt]="track.title"
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-            <div
-              class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
-              <div class="flex gap-1">
-                <button tuiIconButton type="button" appearance="flat" size="s" 
-                  [iconStart]="likedIds().has(track.id) ? '@tui.heart-filled' : '@tui.heart'"
-                  class="!text-white hover:!text-red-500 rounded-full"
-                  [class.!text-red-500]="likedIds().has(track.id)"
-                  (click)="$event.stopPropagation(); toggleLike(track)">
-                </button>
-                <button tuiIconButton type="button" appearance="flat" size="s" iconStart="@tui.plus"
-                  class="!text-white hover:!text-purple-400 rounded-full"
-                  (click)="$event.stopPropagation(); openAddToPlaylist(track)">
-                </button>
-              </div>
-              <div
-                class="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center text-white shadow-xl transform translate-y-2 group-hover:translate-y-0 transition-transform">
-                <tui-icon icon="@tui.play" class="text-2xl"></tui-icon>
-              </div>
-            </div>
-          </div>
-          <div class="flex flex-col min-w-0">
-            <span
-              class="text-sm font-bold text-var(--tui-text-primary) truncate group-hover:text-purple-400 transition-colors">{{
-              track.title }}</span>
-            <span class="text-xs text-[var(--tui-text-secondary)] truncate">{{ track.artist.name }}</span>
-          </div>
-        </div>
+          <app-track-card [track]="track"></app-track-card>
         }
       </div>
     </section>
   }
 
-  <!-- Categories / Placeholders -->
-  <section class="flex flex-wrap gap-3">
-    @for (cat of ['Relax', 'Energize', 'Workout', 'Commute', 'Focus']; track cat) {
-    <button
-      class="px-5 py-2 rounded-full bg-[var(--tui-background-elevation-1)] border border-[var(--tui-border-normal)] text-sm font-medium hover:bg-[var(--tui-background-elevation-2)] transition-colors text-var(--tui-text-primary)">
-      {{ cat }}
-    </button>
-    }
+  <!-- Trending Tracks -->
+  <section class="flex flex-col gap-6">
+    <div class="flex items-center justify-between">
+      <h2 class="text-2xl font-bold text-var(--tui-text-primary)">Trending Now</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      @for (track of trendingTracks(); track track.id; let i = $index) {
+        <app-track-card [track]="track" [index]="i + 1" [showIndex]="true"></app-track-card>
+      }
+    </div>
+  </section>
+
+  <!-- Trending Albums -->
+  <section class="flex flex-col gap-6">
+    <h2 class="text-2xl font-bold text-var(--tui-text-primary)">Top Albums</h2>
+    <div class="flex gap-6 overflow-x-auto no-scrollbar pb-4 -mx-4 px-4">
+      @for (album of trendingAlbums(); track album.id) {
+        <div class="min-w-40">
+          <app-album-card [album]="album"></app-album-card>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- Trending Artists -->
+  <section class="flex flex-col gap-6">
+    <h2 class="text-2xl font-bold text-var(--tui-text-primary)">Popular Artists</h2>
+    <div class="flex gap-8 overflow-x-auto no-scrollbar pb-4 -mx-4 px-4">
+      @for (artist of trendingArtists(); track artist.id) {
+        <div class="min-w-32">
+          <app-artist-card [artist]="artist"></app-artist-card>
+        </div>
+      }
+    </div>
   </section>
 </div>

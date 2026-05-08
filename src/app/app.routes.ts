@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -19,18 +20,25 @@ export const routes: Routes = [
       },
       {
         path: 'playlists',
+        canActivate: [authGuard],
         loadComponent: () => import('./features/playlists/playlists.component').then(m => m.PlaylistsComponent),
       },
       {
         path: 'playlists/:id',
+        canActivate: [authGuard],
         loadComponent: () => import('./features/playlists/playlist-detail/playlist-detail.component').then(m => m.PlaylistDetailComponent),
       },
       {
-        path: 'library',
-        loadComponent: () => import('./features/library/library.component').then(m => m.LibraryComponent),
+        path: 'albums/:id',
+        loadComponent: () => import('./features/albums/album-detail/album-detail.component').then(m => m.AlbumDetailComponent),
+      },
+      {
+        path: 'artists/:id',
+        loadComponent: () => import('./features/artists/artist-detail/artist-detail.component').then(m => m.ArtistDetailComponent),
       },
       {
         path: 'history',
+        canActivate: [authGuard],
         loadComponent: () => import('./features/history/history.component').then(m => m.HistoryComponent),
       },
     ]

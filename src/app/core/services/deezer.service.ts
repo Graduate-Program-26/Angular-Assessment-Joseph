@@ -61,4 +61,24 @@ export class DeezerService {
       withCredentials: true
     });
   }
+
+  getAlbum(id: number): Observable<Album> {
+    return this.http.get<Album>(`${this.apiUrl}/album/${id}`);
+  }
+
+  getArtist(id: number): Observable<Artist> {
+    return this.http.get<Artist>(`${this.apiUrl}/artist/${id}`);
+  }
+
+  getArtistTopTracks(id: number): Observable<{ data: Track[] }> {
+    return this.http.get<{ data: Track[] }>(`${this.apiUrl}/artist/${id}/top`);
+  }
+
+  getArtistAlbums(id: number): Observable<{ data: Album[] }> {
+    return this.http.get<{ data: Album[] }>(`${this.apiUrl}/artist/${id}/albums`);
+  }
+
+  getChart(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/chart`);
+  }
 }

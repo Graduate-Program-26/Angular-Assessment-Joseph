@@ -5,15 +5,9 @@ export interface Track {
   preview: string;
   type: 'track';
   explicit_lyrics?: boolean;
-  artist: {
-    id: number;
-    name: string;
-    picture?: string;
-    picture_small?: string;
-    picture_medium?: string;
-    picture_big?: string;
-  };
-  album: Album;
+  rank: number;
+  artist?: Artist;
+  album?: Album;
 }
 
 export interface Playlist {
@@ -25,11 +19,12 @@ export interface Playlist {
 export interface Artist {
   id: number;
   name: string;
-  picture_medium: string;
+  picture_medium?: string;
   picture_xl?: string;
+  picture_small?: string;
   nb_album?: number;
   nb_fan?: number;
-  type: 'artist';
+  type?: 'artist';
 }
 
 export interface Album {
@@ -37,13 +32,15 @@ export interface Album {
   title: string;
   cover_medium: string;
   cover_small: string;
-  cover_big: string;
+  cover_big?: string;
+  cover_xl?: string;
   tracklist: string;
-  artist: {
-    name: string;
-  };
+  artist?: Artist;
   type: 'album';
-  tracks: {data: Track[], total: number};
+  release_date: string;
+  nb_tracks?: number;
+  fans?: number;
+  tracks?: {data: Track[], total: number};
 }
 
 export type SearchItem = Track | Artist | Album;

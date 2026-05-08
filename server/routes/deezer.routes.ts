@@ -73,4 +73,48 @@ router.get('/chart', async (req: Request, res: Response) => {
   }
 });
 
+router.get('/album/:id', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const response = await fetch(`https://api.deezer.com/album/${id}`);
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch from Deezer' });
+  }
+});
+
+router.get('/artist/:id', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const response = await fetch(`https://api.deezer.com/artist/${id}`);
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch from Deezer' });
+  }
+});
+
+router.get('/artist/:id/top', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const response = await fetch(`https://api.deezer.com/artist/${id}/top?limit=10`);
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch from Deezer' });
+  }
+});
+
+router.get('/artist/:id/albums', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const response = await fetch(`https://api.deezer.com/artist/${id}/albums?limit=50`);
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch from Deezer' });
+  }
+});
+
 export default router;
