@@ -1,16 +1,20 @@
 import { Component, ElementRef, inject, viewChild, effect, computed, DestroyRef } from '@angular/core';
+import { Router } from '@angular/router';
 import { toObservable, toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { AppStore } from '../../core/store/app.store';
-import { TuiIcon, TuiLoader, TuiDataList, TuiDropdown, TuiButton, TuiDialogService } from '@taiga-ui/core';
+import { TuiIcon, TuiLoader, TuiDataList, TuiDropdown, TuiButton, TuiDialogService, TuiTextfield, TuiInput } from '@taiga-ui/core';
 import { injectInfiniteQuery } from '@tanstack/angular-query-experimental';
 import { DeezerService } from '../../core/services/deezer.service';
 import { lastValueFrom, debounceTime, distinctUntilChanged } from 'rxjs';
-import { DurationPipe } from '../../core/pipes/duration.pipe';
 import { SearchItem, Track, Album } from '../../core/models/track.model';
 import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
 import { AddToPlaylistDialogComponent } from '../playlists/add-to-playlist-dialog/add-to-playlist-dialog.component';
 import { PlaylistService } from '../../core/services/playlist.service';
+
+import { TrackCardComponent } from '../../shared/components/track-card/track-card.component';
+import { AlbumCardComponent } from '../../shared/components/album-card/album-card.component';
+import { ArtistCardComponent } from '../../shared/components/artist-card/artist-card.component';
 
 @Component({
   selector: 'app-search',
@@ -22,12 +26,17 @@ import { PlaylistService } from '../../core/services/playlist.service';
     TuiDropdown,
     TuiDataList,
     TuiButton,
-    DurationPipe,
+    TrackCardComponent,
+    AlbumCardComponent,
+    ArtistCardComponent,
+    TuiTextfield,
+    TuiInput,
   ],
   templateUrl: './search.component.html',
 })
 export class SearchComponent {
   protected readonly store = inject(AppStore);
+  private readonly router = inject(Router);
   private readonly dialogs = inject(TuiDialogService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly deezer = inject(DeezerService);
@@ -35,6 +44,14 @@ export class SearchComponent {
   private readonly sentinel = viewChild<ElementRef>('sentinel');
   
   protected readonly likedIds = this.playlistService.likedTrackIds;
+
+  viewDetail(item: SearchItem): void {
+    if (item.type === 'artist') {
+      this.router.navigate(['/artists', item.id]);
+    } else if (item.type === 'album') {
+      this.router.navigate(['/albums', item.id]);
+    }
+  }
 
   protected readonly debouncedSearchTerm = toSignal(
     toObservable(this.store.searchTerm).pipe(
@@ -117,37 +134,42 @@ export class SearchComponent {
     const tracks = this.firstPageTracks();
     if (tracks.length === 0) return null;
 
-    if (tracks.length >= 2 && tracks[0].artist.id === tracks[1].artist.id) {
-      const artist = this.firstPageArtists().find(a => a.id === tracks[0].artist.id);
+    const firstTrack = tracks[0];
+    const secondTrack = tracks[1];
+    const thirdTrack = tracks[2];
+
+    if (tracks.length >= 2 && firstTrack.artist?.id === secondTrack.artist?.id) {
+      const artist = this.firstPageArtists().find(a => a.id === firstTrack.artist?.id);
       if (artist) return artist;
     }
 
     if (
       tracks.length >= 3 &&
-      tracks[0].album.id === tracks[1].album.id &&
-      tracks[1].album.id === tracks[2].album.id
+      firstTrack.album?.id === secondTrack.album?.id &&
+      secondTrack.album?.id === thirdTrack.album?.id
     ) {
-      const album = this.firstPageAlbums().find(a => a.id === tracks[0].album.id);
+      const album = this.firstPageAlbums().find(a => a.id === firstTrack.album?.id);
       if (album) return album;
     }
 
-    return tracks[0];
+    return firstTrack;
   });
 
   getHeroTitle(item: SearchItem): string {
-    return item.type === 'artist' ? item.name : item.title;
+    if (item.type === 'artist') return item.name;
+    return (item as any).title || '';
   }
 
   getHeroSubtitle(item: SearchItem): string {
-    if (item.type === 'track') return item.artist.name;
-    if (item.type === 'album') return item.artist.name;
+    if (item.type === 'track') return item.artist?.name || 'Unknown Artist';
+    if (item.type === 'album') return item.artist?.name || 'Unknown Artist';
     return 'Artist';
   }
 
   getHeroImage(item: SearchItem): string {
-    if (item.type === 'artist') return item.picture_xl || item.picture_medium;
+    if (item.type === 'artist') return item.picture_xl || item.picture_medium || '';
     if (item.type === 'album') return item.cover_medium;
-    return item.album.cover_medium;
+    return (item as Track).album?.cover_medium || '';
   }
 
   playHero(item: SearchItem): void {
