@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Album, Artist, Track } from '../models/track.model';
 import { Observable } from 'rxjs';
+import { HistoryItem, Playlist } from './indexed-db.service';
 
 @Injectable({
   providedIn: 'root',
@@ -34,5 +35,30 @@ export class DeezerService {
 
   getTrack(trackId: number): Observable<Track> {
     return this.http.get<Track>(`${this.apiUrl}/track/${trackId}`);
+  }
+
+  // Cloud Sync
+  uploadHistory(history: HistoryItem[]): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/sync/history`, { history }, {
+      withCredentials: true
+    });
+  }
+
+  downloadHistory(): Observable<{ items: HistoryItem[] }> {
+    return this.http.get<{ items: HistoryItem[] }>(`${this.apiUrl}/sync/history`, {
+      withCredentials: true
+    });
+  }
+
+  uploadPlaylists(playlists: Playlist[]): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/sync/playlists`, { playlists }, {
+      withCredentials: true
+    });
+  }
+
+  downloadPlaylists(): Observable<{ playlists: Playlist[] }> {
+    return this.http.get<{ playlists: Playlist[] }>(`${this.apiUrl}/sync/playlists`, {
+      withCredentials: true
+    });
   }
 }

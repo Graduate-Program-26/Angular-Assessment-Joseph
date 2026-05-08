@@ -1,23 +1,40 @@
-import { Component, ElementRef, inject, viewChild, effect, computed } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { Component, ElementRef, inject, viewChild, effect, computed, DestroyRef } from '@angular/core';
+import { toObservable, toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CommonModule } from '@angular/common';
 import { AppStore } from '../../core/store/app.store';
-import { TuiIcon, TuiLoader, TuiDataList, TuiDropdown } from '@taiga-ui/core';
+import { TuiIcon, TuiLoader, TuiDataList, TuiDropdown, TuiButton, TuiDialogService } from '@taiga-ui/core';
 import { injectInfiniteQuery } from '@tanstack/angular-query-experimental';
 import { DeezerService } from '../../core/services/deezer.service';
 import { lastValueFrom, debounceTime, distinctUntilChanged } from 'rxjs';
 import { DurationPipe } from '../../core/pipes/duration.pipe';
 import { SearchItem, Track, Album } from '../../core/models/track.model';
+import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
+import { AddToPlaylistDialogComponent } from '../playlists/add-to-playlist-dialog/add-to-playlist-dialog.component';
+import { PlaylistService } from '../../core/services/playlist.service';
 
 @Component({
   selector: 'app-search',
   standalone: true,
-  imports: [TuiIcon, TuiLoader, TuiDataList, TuiDropdown, DurationPipe],
+  imports: [
+    CommonModule,
+    TuiIcon,
+    TuiLoader,
+    TuiDropdown,
+    TuiDataList,
+    TuiButton,
+    DurationPipe,
+  ],
   templateUrl: './search.component.html',
 })
 export class SearchComponent {
   protected readonly store = inject(AppStore);
+  private readonly dialogs = inject(TuiDialogService);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly deezer = inject(DeezerService);
+  private readonly playlistService = inject(PlaylistService);
   private readonly sentinel = viewChild<ElementRef>('sentinel');
+  
+  protected readonly likedIds = this.playlistService.likedTrackIds;
 
   protected readonly debouncedSearchTerm = toSignal(
     toObservable(this.store.searchTerm).pipe(
@@ -150,5 +167,31 @@ export class SearchComponent {
 
   addToQueue(track: Track): void {
     this.store.addToQueue(track);
+  }
+
+  onSearchInput(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.store.setSearchTerm(value);
+  }
+
+  asTrack(item: SearchItem): Track {
+    return item as Track;
+  }
+
+  toggleLike(track: Track) {
+    this.playlistService.toggleLike(track);
+  }
+
+  openAddToPlaylist(track: Track) {
+    this.dialogs.open(
+      new PolymorpheusComponent(AddToPlaylistDialogComponent),
+      {
+        data: track,
+        label: 'Add to Playlist',
+        dismissible: true,
+      }
+    )
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe();
   }
 }

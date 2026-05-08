@@ -1,6 +1,6 @@
 <div class="flex flex-col gap-8 pb-12">
   <header>
-    <h1 class="text-3xl md:text-4xl font-bold text-var(--tui-text-action) mb-2">History</h1>
+    <h1 class="text-3xl md:text-4xl font-bold text-(--tui-text-primary) mb-2">History</h1>
     <p class="text-[var(--tui-text-secondary)]">Your recently played tracks and albums.</p>
   </header>
   <tui-loader [loading]="isLoading()">
@@ -14,23 +14,48 @@
           <div
             class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
             <div
-              class="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center text-var(--tui-text-action) shadow-xl transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+              class="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center text-(--tui-text-primary) shadow-xl transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
               <tui-icon icon="@tui.play" class="text-3xl"></tui-icon>
             </div>
           </div>
         </div>
         <div class="flex flex-col flex-1">
-          <span class="text-sm font-semibold text-var(--tui-text-action)">{{ track.title }}</span>
+          <span class="text-sm font-semibold text-(--tui-text-primary)">{{ track.title }}</span>
           <span class="text-xs text-[var(--tui-text-secondary)]">{{ track.artist.name }} • {{ track.album.title
             }}</span>
         </div>
-        <div class="flex flex-col items-end gap-1">
-          <span class="text-xs text-[var(--tui-text-secondary)]">{{
-            track.playedAt | timeAgo:tick()
-            }}</span>
-          <span
-            class="text-xs text-[var(--tui-text-tertiary)] group-hover:text-var(--tui-text-action) transition-colors">{{
-            track.duration | duration }}</span>
+        <div class="flex items-center gap-2">
+          <button tuiIconButton shape="rounded" type="button" appearance="flat" size="s" 
+            [iconStart]="likedIds().has(track.id) ? '@tui.heart-filled' : '@tui.heart'"
+            class="!text-[var(--tui-text-secondary)] hover:!text-red-500 rounded-full md:opacity-0 md:group-hover:opacity-100 transition-all hidden md:flex"
+            [class.!text-red-500]="likedIds().has(track.id)"
+            (click)="$event.stopPropagation(); toggleLike(track)">
+          </button>
+          <button tuiIconButton shape="rounded" type="button" appearance="flat" size="s" iconStart="@tui.plus"
+            class="!text-[var(--tui-text-secondary)] hover:!text-purple-400 rounded-full md:opacity-0 md:group-hover:opacity-100 transition-all hidden md:flex"
+            (click)="$event.stopPropagation(); openAddToPlaylist(track)">
+          </button>
+          
+          <!-- More button for mobile -->
+          <button tuiIconButton shape="rounded" type="button" appearance="flat" size="s" iconStart="@tui.ellipsis"
+            class="!text-[var(--tui-text-secondary)] md:hidden"
+            [tuiDropdown]="historyMenu" (click)="$event.stopPropagation()">
+          </button>
+          <ng-template #historyMenu>
+            <tui-data-list>
+              <button tuiOption (click)="toggleLike(track)">Like track</button>
+              <button tuiOption (click)="openAddToPlaylist(track)">Add to playlist</button>
+            </tui-data-list>
+          </ng-template>
+
+          <div class="flex flex-col items-end gap-1 shrink-0 min-w-[60px]">
+            <span class="text-[10px] md:text-xs text-[var(--tui-text-secondary)]">{{
+              track.playedAt | timeAgo:tick()
+              }}</span>
+            <span
+              class="text-[10px] md:text-xs text-[var(--tui-text-tertiary)] group-hover:text-(--tui-text-primary) transition-colors">{{
+              track.duration | duration }}</span>
+          </div>
         </div>
       </div>
       }

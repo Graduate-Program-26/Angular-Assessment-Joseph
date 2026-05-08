@@ -4,6 +4,7 @@ import { Track } from '../models/track.model';
 
 export interface HistoryItem extends Track {
   playedAt: string;
+  userId: string;
 }
 
 export interface Playlist {
@@ -12,6 +13,7 @@ export interface Playlist {
   tracks: Track[];
   createdAt: string;
   createdBy: string;
+  userId: string;
 }
 
 @Injectable({
@@ -23,9 +25,9 @@ export class AppDatabase extends Dexie {
 
   constructor() {
     super('DeeJayDB');
-    this.version(1).stores({
-      history: 'id, playedAt',
-      playlists: 'id, name',
+    this.version(2).stores({
+      history: 'id, playedAt, userId',
+      playlists: 'id, name, userId',
     });
   }
 }

@@ -20,7 +20,7 @@
 
 <!-- ── TIMESTAMPS: Top Left & Right (under border) ── -->
 <div
-  class="absolute top-2 left-6 text-[10px] text-var(--tui-text-action) font-medium tabular-nums pointer-events-none select-none">
+  class="absolute top-2 left-6 text-[10px] text-var(--tui-text-primary) font-medium tabular-nums pointer-events-none select-none">
   {{ store.currentTime() | duration }}
 </div>
 <div
@@ -40,7 +40,7 @@
   </div>
 
   <div class="flex flex-col min-w-0 flex-1">
-    <span class="text-sm font-semibold truncate text-var(--tui-text-action) leading-tight">
+    <span class="text-sm font-semibold truncate text-var(--tui-text-primary) leading-tight">
       {{ store.currentTrack()?.title || 'Select a track' }}
     </span>
     <span class="text-xs text-(--tui-text-secondary) truncate leading-tight">
@@ -59,17 +59,17 @@
     </button>
 
     <button (click)="playPrevious()"
-      class="text-(--tui-text-secondary) hover:text-var(--tui-text-action) transition-colors">
+      class="text-(--tui-text-secondary) hover:text-var(--tui-text-primary) transition-colors">
       <tui-icon icon="@tui.step-back" class="text-lg"></tui-icon>
     </button>
 
     <button (click)="togglePlay()"
-      class="w-10 h-10 flex items-center justify-center rounded-full bg-linear-to-tr from-purple-500 to-pink-500 text-var(--tui-text-action) hover:scale-105 transition-transform shadow-lg shadow-purple-500/20 shrink-0">
+      class="w-10 h-10 flex items-center justify-center rounded-full bg-linear-to-tr from-purple-500 to-pink-500 text-var(--tui-text-primary) hover:scale-105 transition-transform shadow-lg shadow-purple-500/20 shrink-0">
       <tui-icon [icon]="store.isPlaying() ? '@tui.pause' : '@tui.play'" class="text-base translate-x-px"></tui-icon>
     </button>
 
     <button (click)="playNext()"
-      class="text-(--tui-text-secondary) hover:text-var(--tui-text-action) transition-colors">
+      class="text-(--tui-text-secondary) hover:text-var(--tui-text-primary) transition-colors">
       <tui-icon icon="@tui.step-forward" class="text-lg"></tui-icon>
     </button>
 
@@ -96,7 +96,7 @@
   </div>
 
   <button (click)="playerUi.toggleQueue()"
-    class="flex xl:hidden items-center justify-center w-8 h-8 rounded-full text-(--tui-text-secondary) hover:text-var(--tui-text-action) hover:bg-(--tui-background-elevation-1) transition-all shrink-0"
+    class="flex xl:hidden items-center justify-center w-8 h-8 rounded-full text-(--tui-text-secondary) hover:text-var(--tui-text-primary) hover:bg-(--tui-background-elevation-1) transition-all shrink-0"
     aria-label="Open queue">
     <tui-icon icon="@tui.list-music" class="text-base"></tui-icon>
   </button>

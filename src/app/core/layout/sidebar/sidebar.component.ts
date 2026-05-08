@@ -1,6 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal, effect } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { TuiIcon } from '@taiga-ui/core';
+import { PlaylistService } from '../../services/playlist.service';
+import { Playlist } from '../../services/indexed-db.service';
+import { CommonModule } from '@angular/common';
 
 interface NavItem {
   label: string;
@@ -12,13 +15,17 @@ interface NavItem {
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, TuiIcon],
+  imports: [CommonModule, RouterLink, RouterLinkActive, TuiIcon],
   templateUrl: './sidebar.component.html',
   host: {
     class: 'hidden md:flex flex-col w-56 bg-[var(--tui-background-base)] border-r border-[var(--tui-border-normal)] py-4 gap-1 overflow-y-auto shrink-0',
   },
 })
 export class SidebarComponent {
+  private readonly playlistService = inject(PlaylistService);
+  
+  readonly playlists = signal<Playlist[]>([]);
+
   readonly navItems: NavItem[] = [
     { label: 'Home', icon: '@tui.home', route: '/', exact: true },
     { label: 'Explore', icon: '@tui.compass', route: '/explore', exact: false },
@@ -27,4 +34,16 @@ export class SidebarComponent {
     { label: 'History', icon: '@tui.history', route: '/history', exact: false },
     { label: 'Playlists', icon: '@tui.list-music', route: '/playlists', exact: false },
   ];
+
+  constructor() {
+    effect(() => {
+      this.playlistService.version();
+      this.loadPlaylists();
+    });
+  }
+
+  private async loadPlaylists() {
+    const p = await this.playlistService.getPlaylists();
+    this.playlists.set(p);
+  }
 }

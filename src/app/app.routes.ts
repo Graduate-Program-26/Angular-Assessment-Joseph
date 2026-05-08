@@ -22,6 +22,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/playlists/playlists.component').then(m => m.PlaylistsComponent),
       },
       {
+        path: 'playlists/:id',
+        loadComponent: () => import('./features/playlists/playlist-detail/playlist-detail.component').then(m => m.PlaylistDetailComponent),
+      },
+      {
         path: 'library',
         loadComponent: () => import('./features/library/library.component').then(m => m.LibraryComponent),
       },
