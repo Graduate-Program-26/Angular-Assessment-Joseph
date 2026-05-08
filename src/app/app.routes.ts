@@ -26,10 +26,6 @@ export const routes: Routes = [
         loadComponent: () => import('./features/playlists/playlist-detail/playlist-detail.component').then(m => m.PlaylistDetailComponent),
       },
       {
-        path: 'library',
-        loadComponent: () => import('./features/library/library.component').then(m => m.LibraryComponent),
-      },
-      {
         path: 'history',
         loadComponent: () => import('./features/history/history.component').then(m => m.HistoryComponent),
       },
