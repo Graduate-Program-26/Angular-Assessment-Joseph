@@ -1,6 +1,6 @@
 <div class="flex flex-col gap-8 pb-12">
   <header>
-    <h1 class="text-3xl md:text-4xl font-bold text-var(--tui-text-action) mb-2">Explore</h1>
+    <h1 class="text-3xl md:text-4xl font-bold text-var(--tui-text-primary) mb-2">Explore</h1>
     <p class="text-[var(--tui-text-secondary)]">Discover new music and trending artists.</p>
   </header>
 
@@ -13,13 +13,13 @@
     <div
       class="p-6 rounded-2xl bg-[var(--tui-background-elevation-1)] border border-[var(--tui-border-normal)] hover:bg-[var(--tui-background-elevation-2)] transition-all cursor-pointer flex flex-col gap-4 group">
       <div class="text-4xl">{{ item.icon }}</div>
-      <h3 class="text-xl font-bold text-var(--tui-text-action)">{{ item.title }}</h3>
+      <h3 class="text-xl font-bold text-var(--tui-text-primary)">{{ item.title }}</h3>
     </div>
     }
   </div>
 
   <section class="flex flex-col gap-4">
-    <h2 class="text-xl font-bold text-var(--tui-text-action)">Trending right now</h2>
+    <h2 class="text-xl font-bold text-var(--tui-text-primary)">Trending right now</h2>
     <div class="flex flex-col gap-2">
       @for (i of [1,2,3,4,5]; track i) {
       <div
@@ -27,10 +27,10 @@
         <span class="w-6 text-center text-[var(--tui-text-secondary)] font-medium">{{ i }}</span>
         <div class="w-12 h-12 rounded bg-gradient-to-br from-purple-900/20 to-pink-900/20"></div>
         <div class="flex flex-col flex-1">
-          <span class="text-sm font-semibold text-var(--tui-text-action)">Trending Song {{ i }}</span>
+          <span class="text-sm font-semibold text-var(--tui-text-primary)">Trending Song {{ i }}</span>
           <span class="text-xs text-[var(--tui-text-secondary)]">Artist Name</span>
         </div>
-        <span class="text-xs text-[var(--tui-text-secondary)] group-hover:text-var(--tui-text-action)">3:45</span>
+        <span class="text-xs text-[var(--tui-text-secondary)] group-hover:text-var(--tui-text-primary)">3:45</span>
       </div>
       }
     </div>
