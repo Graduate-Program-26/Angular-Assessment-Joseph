@@ -30,16 +30,6 @@ export class HeaderComponent {
     this.open = false;
   }
 
-  onSearch(event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
-    this.store.setSearchTerm(value);
-    this.goToSearch()
-  }
-  goToSearch() {
-    if (this.router.url !== '/search') {
-      this.router.navigate(['/search']);
-    }
-  }
 
   getInitials(name: string | null): string {
     if (!name) return '?';
