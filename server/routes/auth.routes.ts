@@ -180,7 +180,7 @@ router.all('/callback', async (req: Request, res: Response) => {
 
     if (req.method === 'POST') res.json({ status: 'success' });
     else res.redirect('/');
-  } catch (error) {
+  } catch {
     if (req.method === 'POST') res.status(500).json({ error: 'Session creation failed' });
     else res.redirect('/?error=session_failed');
   }
