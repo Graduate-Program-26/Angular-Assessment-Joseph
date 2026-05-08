@@ -1,0 +1,192 @@
+<div class="flex flex-col gap-8 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
+  <!-- Search Input -->
+  <div class="sticky top-0 z-50 bg-var(--tui-background-base)/80 backdrop-blur-md py-4 -mx-4 px-4 border-b border-transparent transition-all"
+    [class.border-var(--tui-border-normal)]="store.searchTerm().length > 0">
+    <tui-textfield iconStart="@tui.search" class="max-w-xl mx-auto shadow-2xl">
+      <input
+        tuiInput
+        placeholder="Type to search tracks, artists, or albums..."
+        [value]="store.searchTerm()"
+        (input)="onSearchInput($event)"
+      />
+    </tui-textfield>
+  </div>
+
+  @if (store.searchTerm().length === 0) {
+    <div class="flex flex-col items-center justify-center py-40 text-center gap-4 animate-in zoom-in duration-500">
+      <div class="w-24 h-24 rounded-full bg-purple-500/10 flex items-center justify-center mb-4">
+        <tui-icon icon="@tui.search" class="text-5xl text-purple-500 opacity-50"></tui-icon>
+      </div>
+      <h2 class="text-3xl font-black text-(--tui-text-primary) tracking-tighter">Search your favorite music</h2>
+      <p class="text-(--tui-text-primary)/60 max-w-sm">Find tracks, artists, and albums from the vast Deezer library.</p>
+    </div>
+  } @else {
+    @if (isloading()) {
+      <div class="flex items-center justify-center py-20">
+        <tui-loader [loading]="true" size="xl"></tui-loader>
+      </div>
+    }
+    <!-- Tabs -->
+    <div class="flex gap-2 overflow-x-auto no-scrollbar pb-2">
+      @for (tab of ['All', 'Tracks', 'Artists', 'Albums']; track tab) {
+        <button tuiButton appearance="flat" size="s" shape="rounded"
+          [class.bg-purple-600]="store.activeTab() === tab"
+          [class.!text-white]="store.activeTab() === tab"
+          (click)="store.setActiveTab(tab)">
+          {{ tab }}
+        </button>
+      }
+    </div>
+
+    @switch (store.activeTab()) {
+    @case ('All') {
+    @if (topResult(); as topResult) {
+    <!-- Top Result Hero -->
+    <div class="flex flex-col gap-4">
+      <h2 class="text-xl font-bold text-(--tui-text-primary) tracking-tight">Top Result</h2>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div
+          class="lg:col-span-1 p-8 rounded-2xl bg-linear-to-br from-var(--tui-background-neutral-2) to-white/5 hover:from-white/15 hover:to-var(--tui-background-neutral-2) transition-all cursor-pointer group flex flex-col items-center text-center shadow-2xl relative overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+          tabindex="0" (click)="playHero(topResult)" (keydown.enter)="playHero(topResult)">
+          <div
+            class="absolute -top-12 -right-12 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl group-hover:bg-purple-500/20 transition-all">
+          </div>
+          <div
+            class="w-48 h-48 rounded-full overflow-hidden shadow-2xl mb-6 ring-4 ring-transparent group-hover:ring-purple-500/50 transition-all z-10">
+            <img [src]="getHeroImage(topResult)" [alt]="getHeroTitle(topResult)"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+          </div>
+          <h3 class="text-3xl font-black text-(--tui-text-primary) mb-2 z-10">{{ getHeroTitle(topResult) }}</h3>
+          <span class="text-sm text-(--tui-text-primary)/60 uppercase tracking-widest font-bold mb-6 z-10">{{
+            getHeroSubtitle(topResult) }}</span>
+
+          <div class="flex items-center gap-2 z-10">
+            <button (click)="$event.stopPropagation(); playHero(topResult)"
+              class="px-8 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-full font-bold transition-all transform active:scale-95 shadow-lg shadow-purple-500/20">
+              Play Now
+            </button>
+            
+            @if (topResult.type === 'track') {
+              <button tuiIconButton shape="rounded" type="button" appearance="flat" size="s" 
+                [iconStart]="likedIds().has(topResult.id) ? '@tui.heart-filled' : '@tui.heart'"
+                class="!text-(--tui-text-primary) hover:!text-red-500 rounded-full transition-all"
+                [class.!text-red-500]="likedIds().has(topResult.id)"
+                (click)="$event.stopPropagation(); toggleLike(asTrack(topResult))">
+              </button>
+              <button tuiIconButton shape="rounded" type="button" appearance="flat" size="s" iconStart="@tui.plus"
+                class="!text-(--tui-text-primary) hover:!text-purple-400 rounded-full"
+                (click)="$event.stopPropagation(); openAddToPlaylist(asTrack(topResult))">
+              </button>
+            } @else {
+              <button tuiButton appearance="outline" size="s" shape="rounded" 
+                (click)="$event.stopPropagation(); viewDetail(topResult)">
+                View {{ topResult.type | titlecase }}
+              </button>
+            }
+
+            <button tuiIconButton shape="rounded" type="button" appearance="flat" iconStart="@tui.ellipsis"
+              class="!text-(--tui-text-primary) hover:!bg-(--tui-background-neutral-2) rounded-full"
+              [tuiDropdown]="heroMenu" (click)="$event.stopPropagation()">
+            </button>
+            <ng-template #heroMenu>
+              <tui-data-list>
+                @if (topResult.type === 'track') {
+                  <button tuiOption (click)="addToQueue(asTrack(topResult))">Add to queue</button>
+                  <button tuiOption (click)="openAddToPlaylist(asTrack(topResult))">Add to playlist</button>
+                } @else {
+                  <button tuiOption (click)="viewDetail(topResult)">View {{ topResult.type | titlecase }}</button>
+                }
+              </tui-data-list>
+            </ng-template>
+          </div>
+        </div>
+
+        <!-- Songs Preview -->
+        <div class="lg:col-span-2 flex flex-col gap-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-bold text-(--tui-text-primary) mb-2">Top tracks</h3>
+            <button (click)="store.setActiveTab('Tracks')"
+              class="text-xs font-bold text-(--tui-text-primary)/60 hover:text-(--tui-text-primary) uppercase tracking-widest border border-var(--tui-background-neutral-2) px-3 py-1 rounded-full hover:bg-(--tui-background-neutral-2) transition-all">View
+              all</button>
+          </div>
+          <div class="flex flex-col">
+            @for (track of firstPageTracks().slice(0,6); track track.id) {
+              <app-track-card [track]="track"></app-track-card>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+
+    <!-- Artists Overview -->
+    @if (firstPageArtists().length > 0) {
+    <div class="flex flex-col gap-6">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl font-bold text-(--tui-text-primary) tracking-tight">Artists</h2>
+        <button (click)="store.setActiveTab('Artists')"
+          class="text-xs font-bold text-(--tui-text-primary)/60 hover:text-(--tui-text-primary) uppercase tracking-widest border border-var(--tui-background-neutral-2) px-3 py-1 rounded-full hover:bg-(--tui-background-neutral-2) transition-all">View
+          all</button>
+      </div>
+      <div class="flex gap-8 overflow-x-auto no-scrollbar pb-4 -mx-2 px-2">
+        @for (item of firstPageArtists(); track item.id) {
+          <div class="min-w-36">
+            <app-artist-card [artist]="item"></app-artist-card>
+          </div>
+        }
+      </div>
+    </div>
+    }
+
+    <!-- Albums Overview -->
+    @if (firstPageAlbums().length > 0) {
+    <div class="flex flex-col gap-6">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl font-bold text-(--tui-text-primary) tracking-tight">Albums</h2>
+        <button (click)="store.setActiveTab('Albums')"
+          class="text-xs font-bold text-(--tui-text-primary)/60 hover:text-(--tui-text-primary) uppercase tracking-widest border border-var(--tui-background-neutral-2) px-3 py-1 rounded-full hover:bg-(--tui-background-neutral-2) transition-all">View
+          all</button>
+      </div>
+      <div class="flex gap-8 overflow-x-auto no-scrollbar pb-4 -mx-2 px-2">
+        @for (album of firstPageAlbums(); track album.id) {
+          <div class="min-w-40">
+            <app-album-card [album]="album"></app-album-card>
+          </div>
+        }
+      </div>
+    </div>
+    }
+    }
+
+    <!-- ARTISTS TAB -->
+    @case ('Artists') {
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-8 gap-y-12">
+      @for (item of allArtists(); track item.id) {
+        <app-artist-card [artist]="item"></app-artist-card>
+      }
+    </div>
+    }
+
+    <!-- TRACKS TAB -->
+    @case ('Tracks') {
+    <div class="flex flex-col">
+      @for (track of allTracks(); track track.id) {
+        <app-track-card [track]="track"></app-track-card>
+      }
+    </div>
+    }
+
+    <!-- ALBUMS TAB -->
+    @case ('Albums') {
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-x-8 gap-y-12">
+      @for (album of allAlbums(); track album.id) {
+        <app-album-card [album]="album"></app-album-card>
+      }
+    </div>
+    }
+    }
+
+    <!-- Sentinel for Infinite Scroll -->
+    <div #sentinel class="h-10"></div>
+  }
+</div>

@@ -1,0 +1,26 @@
+@if (playerUi.isQueueOpen()) {
+<!-- Backdrop -->
+<div class="absolute inset-0 bg-black/60 backdrop-blur-sm pointer-events-auto" (click)="playerUi.closeQueue()"
+  aria-hidden="true"></div>
+
+<!-- Drawer panel: slides up from bottom -->
+<div
+  class="absolute bottom-0 left-0 right-0 pointer-events-auto flex flex-col rounded-t-2xl bg-[var(--tui-background-elevation-2)] border-t border-[var(--tui-border-normal)] max-h-[80dvh] animate-slide-up"
+  role="dialog" aria-label="Queue" aria-modal="true">
+  <!-- Drag handle -->
+  <div class="flex justify-center pt-3 pb-1">
+    <div class="w-10 h-1 rounded-full bg-[var(--tui-border-normal)]"></div>
+  </div>
+
+  <!-- Header -->
+  <div class="flex items-center justify-between px-5 py-3 border-b border-[var(--tui-border-normal)]">
+    <h2 class="text-base font-semibold text-var(--tui-text-primary)">Up Next</h2>
+    <button (click)="playerUi.closeQueue()"
+      class="w-8 h-8 flex items-center justify-center rounded-full text-[var(--tui-text-secondary)] hover:text-var(--tui-text-primary) hover:bg-[var(--tui-background-elevation-1)] transition-all"
+      aria-label="Close queue">
+      <tui-icon icon="@tui.x" class="text-base"></tui-icon>
+    </button>
+  </div>
+  <app-queue-content />
+</div>
+}

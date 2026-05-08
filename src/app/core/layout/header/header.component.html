@@ -1,0 +1,51 @@
+<div class="flex items-center gap-3 w-1/4 min-w-37.5">
+  <div class="w-8 h-8 rounded-full bg-linear-to-tr from-purple-500 to-pink-500 flex items-center justify-center">
+    <tui-icon icon="@tui.music" class="text-var(--tui-text-primary) text-base"></tui-icon>
+  </div>
+  <a routerLink="/"
+    class="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-r from-purple-400 to-pink-400 hover:opacity-80 transition-opacity">
+    DeeJay
+  </a>
+</div>
+
+
+<div class="flex items-center justify-end gap-4 w-1/4 min-w-37.5">
+  <button class="md:hidden text-(--tui-text-secondary) hover:text-var(--tui-text-primary) transition-colors">
+    <tui-icon icon="@tui.search" class="text-xl"></tui-icon>
+  </button>
+
+  @if (auth.currentUser()) {
+  @let user = auth.currentUser();
+  <div class="relative" [tuiDropdown]="dropdown" [(tuiDropdownOpen)]="open">
+    <button class="flex items-center gap-2 hover:opacity-80 transition-opacity" (click)="open = !open">
+      <div tuiAvatar size="s" class="bg-purple-900 border border-purple-500/50">
+        @if (user?.picture) {
+        <img [src]="user?.picture" [alt]="user?.name">
+        }
+        @if (!user?.picture) {
+        {{ getInitials(user?.name || user?.email || '') }}
+        }
+      </div>
+      <tui-icon icon="@tui.chevron-down" class="text-(--tui-text-secondary) text-xs"></tui-icon>
+    </button>
+
+    <ng-template #dropdown>
+      <tui-data-list>
+        <div class="px-4 py-2 border-b border-(--tui-border-normal) mb-1">
+          <div class="text-sm font-bold text-var(--tui-text-primary)">{{ user?.name || 'User' }}</div>
+          <div class="text-xs text-(--tui-text-secondary) truncate max-w-40">{{ user?.email }}</div>
+        </div>
+        <button tuiOption (click)="logout()">
+          <tui-icon icon="@tui.log-out" class="mr-2"></tui-icon>
+          Logout
+        </button>
+      </tui-data-list>
+    </ng-template>
+  </div>
+  } @else {
+  <button tuiButton type="button" appearance="flat" size="s" (click)="login()"
+    class="bg-purple-600 hover:bg-purple-500 text-white rounded-full px-6">
+    Login
+  </button>
+  }
+</div>
