@@ -54,7 +54,7 @@ app.use('/api/sync', syncRoutes);
 // Production: Serve static files and handle Angular routing
 if (process.env['NODE_ENV'] === 'production') {
   app.use(express.static(actualDistFolder));
-  app.get('(.*)', (req: Request, res: Response) => {
+  app.get('*path', (req: Request, res: Response) => {
     res.sendFile(path.join(actualDistFolder, 'index.html'));
   });
 }
